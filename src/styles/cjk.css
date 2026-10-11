@@ -1,0 +1,3 @@
+/* Chinese headline face (Noto Sans SC 900). Only the display stack names it; body text keeps the system CJK font,
+   because this family has a single heavy face and would otherwise be used for every weight. */
+@import '@fontsource/noto-sans-sc/900.css';

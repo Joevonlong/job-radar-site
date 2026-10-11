@@ -1,0 +1,39 @@
+---
+// One 404 for the whole site (GitHub Pages serves /404.html for every missing path), in both languages.
+import '../styles/cjk.css';
+import Base from '../layouts/Base.astro';
+import markLight from '../assets/brand/mark-light.svg?url';
+import markDark from '../assets/brand/mark-dark.svg?url';
+import { COPY } from '../i18n/ui';
+import { docsUrl, localePath, url } from '../lib/site';
+const en = COPY.en.notFound;
+const zh = COPY.zh.notFound;
+---
+
+<Base lang="en" path="" title="404 · Job Radar" description={en.body} alternates={false} noindex>
+  <section class="notfound">
+    <div class="wrap notfound__grid">
+      <div class="notfound__mark" aria-hidden="true">
+        <img class="logo__light" src={markLight} width="200" height="200" alt="" />
+        <img class="logo__dark" src={markDark} width="200" height="200" alt="" />
+      </div>
+      <div>
+        <p class="kicker">404</p>
+        <h1>{en.title}</h1>
+        <p class="notfound__body">{en.body}</p>
+        <p class="notfound__links">
+          <a class="btn btn--primary" href={url(localePath('en', ''))}>{en.home}</a>
+          <a class="btn" href={docsUrl('en')}>{en.docs}</a>
+        </p>
+        <div lang="zh-CN" class="notfound__zh">
+          <h2>{zh.title}</h2>
+          <p class="notfound__body">{zh.body}</p>
+          <p class="notfound__links">
+            <a class="btn" href={url(localePath('zh', ''))}>{zh.home}</a>
+            <a class="btn" href={docsUrl('zh')}>{zh.docs}</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>

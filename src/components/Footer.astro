@@ -1,0 +1,89 @@
+---
+import Logo from './Logo.astro';
+import LangSwitch from './LangSwitch.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import RadarMotif from './RadarMotif.astro';
+import { COPY, TAGLINE, type Lang } from '../i18n/ui';
+import { docsUrl, localePath, url } from '../lib/site';
+import { shortLabel } from '../data/docs-nav.mjs';
+import { PRODUCT_BRANCH, PRODUCT_REPO, SITE_REPO } from '../../site.config.mjs';
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+const { lang, path } = Astro.props;
+const t = COPY[lang];
+const f = t.footer;
+const tag = TAGLINE[lang];
+const blob = (p: string) => `${PRODUCT_REPO}/blob/${PRODUCT_BRANCH}/${p}`;
+const cols = [
+  {
+    title: f.product,
+    links: [
+      { href: PRODUCT_REPO, label: 'GitHub' },
+      { href: url(localePath(lang, 'tutorials/')), label: t.nav.tutorials },
+      { href: url(`guide/getting-started${lang === 'zh' ? '.zh' : ''}.html`), label: f.guide },
+      { href: `${url(localePath(lang, ''))}#faq`, label: t.nav.faq },
+    ],
+  },
+  {
+    title: f.docs,
+    links: ['setup', 'usage', 'configuration', 'ai-providers', 'telegram'].map((slug) => ({
+      href: docsUrl(lang, slug),
+      label: shortLabel(slug, lang) ?? slug,
+    })),
+  },
+  {
+    title: f.project,
+    links: [
+      { href: blob('LICENSE'), label: f.license },
+      { href: blob('CONTRIBUTING.md'), label: f.contributing },
+      { href: blob('SECURITY.md'), label: f.security },
+      { href: SITE_REPO, label: f.siteSource },
+    ],
+  },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__punch">
+    <RadarMotif class="site-footer__motif" />
+    <div class="wrap">
+      <p class="punchline" lang={lang === 'zh' ? 'zh-CN' : 'en'}>
+        <span>{tag.punch1}</span>{' '}<span class="hl">{tag.punch2}</span>
+      </p>
+    </div>
+  </div>
+  <div class="wrap site-footer__grid">
+    <div class="site-footer__brand">
+      <Logo height={32} />
+      <p>{tag.head1}{lang === 'zh' ? '' : ' '}{tag.head2}</p>
+      <div class="site-footer__tools">
+        <LangSwitch lang={lang} path={path} />
+        <ThemeToggle lang={lang} />
+      </div>
+    </div>
+    {
+      cols.map((c) => (
+        <nav class="site-footer__col" aria-label={c.title}>
+          <h2 class="cap">{c.title}</h2>
+          <ul>
+            {c.links.map((l) => (
+              <li>
+                <a href={l.href}>{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+  <div class="wrap">
+    <div class="site-footer__legal">
+      <p>{f.notAffiliated}</p>
+      <p>{f.tos}</p>
+      <p>{f.invented} {f.code}</p>
+    </div>
+  </div>
+</footer>

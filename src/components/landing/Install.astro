@@ -1,0 +1,85 @@
+---
+import SectionHead from './SectionHead.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+import { INSTALL } from '../../data/install';
+import { docsUrl, localePath, url } from '../../lib/site';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].install;
+const plain = (lines: (typeof INSTALL)[number], linux = false) =>
+  lines.filter((l) => l.cmd && (linux || !l.linuxOnly)).map((l) => l.cmd).join('\n');
+const hasLinux = (lines: (typeof INSTALL)[number]) => lines.some((l) => l.linuxOnly);
+const linuxLabel = { en: 'Copy with Linux lines', zh: '复制（含 Linux）' };
+---
+
+<section class="section install" id="install" aria-labelledby="install-title">
+  <div class="wrap">
+    <SectionHead id="install-title" kicker={t.kicker} title={t.title}>
+      <p class="needs">
+        <span class="cap">{t.needs}</span>
+        {t.needsList.map((n) => <span class="chip chip--flat">{n}</span>)}
+      </p>
+    </SectionHead>
+    <ol class="install__steps">
+      {
+        t.steps.map((s, i) => (
+          <li class="istep">
+            <div class="istep__text">
+              <span class="istep__n" aria-hidden="true">{i + 1}</span>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+            <div class="term">
+              <div class={hasLinux(INSTALL[i]) ? 'term__bar term__bar--two' : 'term__bar'}>
+                <span class="term__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="term__title">~/job-radar</span>
+                <button type="button" class="term__copy" data-copy={plain(INSTALL[i])} data-copied={t.copied}>
+                  {t.copy}
+                </button>
+                {hasLinux(INSTALL[i]) && (
+                  <button type="button" class="term__copy" data-copy={plain(INSTALL[i], true)} data-copied={t.copied}>
+                    {linuxLabel[lang]}
+                  </button>
+                )}
+              </div>
+              <pre class="term__body"><code>{INSTALL[i].map((l) => (
+                l.cmd ? (
+                  <span class="term__line"><span class="term__prompt" aria-hidden="true">$ </span>{l.cmd}{l.note && <span class="term__note">  # {l.note[lang]}</span>}{'\n'}</span>
+                ) : (
+                  <span class="term__line term__line--comment"># {l.comment?.[lang]}{'\n'}</span>
+                )
+              ))}</code></pre>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="install__keys"><span class="tag tag--ink">.env</span> {t.keys}</p>
+    <p class="install__more">
+      <a class="btn btn--primary" href={docsUrl(lang, 'setup')}>{t.more} →</a>
+      <a class="btn" href={docsUrl(lang, 'host-setup')}>{t.host}</a>
+      <a class="link-arrow" href={url(localePath(lang, 'tutorials/'))}>{t.watch} →</a>
+    </p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('button[data-copy]').forEach((btn) => {
+    const label = btn.textContent;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.textContent = btn.dataset.copied ?? 'Copied';
+        btn.classList.add('is-done');
+        setTimeout(() => {
+          btn.textContent = label;
+          btn.classList.remove('is-done');
+        }, 1600);
+      } catch {
+        /* clipboard blocked: the commands stay selectable */
+      }
+    });
+  });
+</script>

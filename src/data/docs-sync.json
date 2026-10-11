@@ -1,0 +1,261 @@
+{
+  "source": "Joevonlong/job-radar",
+  "path": "docs/",
+  "commit": "2947f47c185f0043ab5b297356b80ddaef51a973",
+  "commit_date": "2026-10-11T03:58:02+02:00",
+  "commit_subject": "Initial public release (v2.0.1)",
+  "dirty": false,
+  "pages": [
+    {
+      "slug": "index",
+      "en": "docs/README.md",
+      "zh": "docs/README.zh.md",
+      "title_en": "Documentation",
+      "title_zh": "文档"
+    },
+    {
+      "slug": "ai-providers",
+      "en": "docs/ai-providers.md",
+      "zh": "docs/ai-providers.zh.md",
+      "title_en": "AI providers and the host AI worker",
+      "title_zh": "AI provider 与宿主机 AI worker"
+    },
+    {
+      "slug": "ai-traps",
+      "en": "docs/ai-traps.md",
+      "zh": "docs/ai-traps.zh.md",
+      "title_en": "AI trap detection",
+      "title_zh": "AI 陷阱检测"
+    },
+    {
+      "slug": "ai-usage",
+      "en": "docs/ai-usage.md",
+      "zh": "docs/ai-usage.zh.md",
+      "title_en": "AI usage statistics",
+      "title_zh": "AI 用量统计"
+    },
+    {
+      "slug": "apify",
+      "en": "docs/apify.md",
+      "zh": "docs/apify.zh.md",
+      "title_en": "Apify (second-priority LinkedIn channel)",
+      "title_zh": "Apify（LinkedIn 第二顺位通道）"
+    },
+    {
+      "slug": "backup-restore",
+      "en": "docs/backup-restore.md",
+      "zh": "docs/backup-restore.zh.md",
+      "title_en": "Backup and restore",
+      "title_zh": "备份与恢复"
+    },
+    {
+      "slug": "breakdown",
+      "en": "docs/breakdown.md",
+      "zh": "docs/breakdown.zh.md",
+      "title_en": "Job breakdown",
+      "title_zh": "岗位拆解"
+    },
+    {
+      "slug": "brightdata",
+      "en": "docs/brightdata.md",
+      "zh": "docs/brightdata.zh.md",
+      "title_en": "Bright Data (first-priority LinkedIn channel)",
+      "title_zh": "Bright Data（LinkedIn 第一顺位通道）"
+    },
+    {
+      "slug": "ci",
+      "en": "docs/ci.md",
+      "zh": "docs/ci.zh.md",
+      "title_en": "Continuous integration explained",
+      "title_zh": "持续集成（CI）说明"
+    },
+    {
+      "slug": "commercial-use",
+      "en": "docs/commercial-use.md",
+      "zh": "docs/commercial-use.zh.md",
+      "title_en": "Using Job Radar in an organisation",
+      "title_zh": "在组织里使用 Job Radar"
+    },
+    {
+      "slug": "configuration",
+      "en": "docs/configuration.md",
+      "zh": "docs/configuration.zh.md",
+      "title_en": "Where the configuration lives: shipped defaults + user config directory",
+      "title_zh": "配置文件在哪里：默认配置 + 用户配置目录"
+    },
+    {
+      "slug": "deploy",
+      "en": "docs/deploy.md",
+      "zh": "docs/deploy.zh.md",
+      "title_en": "Deploy, upgrade, roll back, and the 7-day unattended acceptance run",
+      "title_zh": "部署、升级、回滚和 7 天无人值守验收"
+    },
+    {
+      "slug": "development",
+      "en": "docs/development.md",
+      "zh": null,
+      "title_en": "Development"
+    },
+    {
+      "slug": "extraction",
+      "en": "docs/extraction.md",
+      "zh": "docs/extraction.zh.md",
+      "title_en": "Job information extraction rules",
+      "title_zh": "岗位信息提取规则"
+    },
+    {
+      "slug": "faq",
+      "en": "docs/faq.md",
+      "zh": "docs/faq.zh.md",
+      "title_en": "FAQ",
+      "title_zh": "常见问题"
+    },
+    {
+      "slug": "gmail-alerts",
+      "en": "docs/gmail-alerts.md",
+      "zh": "docs/gmail-alerts.zh.md",
+      "title_en": "Gmail job alert emails",
+      "title_zh": "Gmail 岗位提醒邮件"
+    },
+    {
+      "slug": "host-setup",
+      "en": "docs/host-setup.md",
+      "zh": "docs/host-setup.zh.md",
+      "title_en": "Host setup (running unattended on a Mac)",
+      "title_zh": "主机设置（Mac 无人值守运行）"
+    },
+    {
+      "slug": "insights",
+      "en": "docs/insights.md",
+      "zh": "docs/insights.zh.md",
+      "title_en": "Insights page: /insights",
+      "title_zh": "统计页 /insights"
+    },
+    {
+      "slug": "installation",
+      "en": "docs/installation.md",
+      "zh": "docs/installation.zh.md",
+      "title_en": "Installation",
+      "title_zh": "安装"
+    },
+    {
+      "slug": "interest-suggestions",
+      "en": "docs/interest-suggestions.md",
+      "zh": "docs/interest-suggestions.zh.md",
+      "title_en": "Weekly suggestions from your interest list",
+      "title_zh": "感兴趣清单的每周建议"
+    },
+    {
+      "slug": "jsearch",
+      "en": "docs/jsearch.md",
+      "zh": "docs/jsearch.zh.md",
+      "title_en": "JSearch (Google for Jobs, RapidAPI)",
+      "title_zh": "JSearch（Google for Jobs，RapidAPI）"
+    },
+    {
+      "slug": "languages",
+      "en": "docs/languages.md",
+      "zh": "docs/languages.zh.md",
+      "title_en": "Languages",
+      "title_zh": "语言"
+    },
+    {
+      "slug": "linkedin-session",
+      "en": "docs/linkedin-session.md",
+      "zh": "docs/linkedin-session.zh.md",
+      "title_en": "LinkedIn session channel (Playwright)",
+      "title_zh": "LinkedIn 登录态通道（Playwright）"
+    },
+    {
+      "slug": "market-packs",
+      "en": "docs/market-packs.md",
+      "zh": "docs/market-packs.zh.md",
+      "title_en": "Market packs",
+      "title_zh": "市场包"
+    },
+    {
+      "slug": "multiple-instances",
+      "en": "docs/multiple-instances.md",
+      "zh": "docs/multiple-instances.zh.md",
+      "title_en": "More than one instance",
+      "title_zh": "多个实例"
+    },
+    {
+      "slug": "privacy",
+      "en": "docs/privacy.md",
+      "zh": "docs/privacy.zh.md",
+      "title_en": "Privacy: what is stored, what leaves your machine, how to delete it",
+      "title_zh": "隐私：存了什么、什么会离开本机、怎么彻底删除"
+    },
+    {
+      "slug": "resume-kit",
+      "en": "docs/resume-kit.md",
+      "zh": "docs/resume-kit.zh.md",
+      "title_en": "resume-kit integration",
+      "title_zh": "resume-kit 联动"
+    },
+    {
+      "slug": "salary",
+      "en": "docs/salary.md",
+      "zh": "docs/salary.zh.md",
+      "title_en": "Salary level and salary lookup",
+      "title_zh": "薪资水平和查薪资"
+    },
+    {
+      "slug": "settings",
+      "en": "docs/settings.md",
+      "zh": "docs/settings.zh.md",
+      "title_en": "Settings Page and Manual Actions",
+      "title_zh": "设置页与手动操作"
+    },
+    {
+      "slug": "setup",
+      "en": "docs/setup.md",
+      "zh": "docs/setup.zh.md",
+      "title_en": "First-run setup",
+      "title_zh": "首次设置"
+    },
+    {
+      "slug": "signals",
+      "en": "docs/signals.md",
+      "zh": "docs/signals.zh.md",
+      "title_en": "Signal categories: pay, benefits and your own signals",
+      "title_zh": "信号类别：薪酬、福利和自定义信号"
+    },
+    {
+      "slug": "sources",
+      "en": "docs/sources.md",
+      "zh": "docs/sources.zh.md",
+      "title_en": "Source registry: one file for every collection source",
+      "title_zh": "来源清单：一个文件管所有采集来源"
+    },
+    {
+      "slug": "tavily",
+      "en": "docs/tavily.md",
+      "zh": "docs/tavily.zh.md",
+      "title_en": "Tavily search (ATS board discovery)",
+      "title_zh": "Tavily 搜索（ATS board 发现）"
+    },
+    {
+      "slug": "telegram",
+      "en": "docs/telegram.md",
+      "zh": "docs/telegram.zh.md",
+      "title_en": "Telegram push",
+      "title_zh": "Telegram 推送"
+    },
+    {
+      "slug": "upgrade",
+      "en": "docs/upgrade.md",
+      "zh": "docs/upgrade.zh.md",
+      "title_en": "Upgrading, rolling back and uninstalling",
+      "title_zh": "升级、回滚与卸载"
+    },
+    {
+      "slug": "usage",
+      "en": "docs/usage.md",
+      "zh": "docs/usage.zh.md",
+      "title_en": "Daily Usage Guide",
+      "title_zh": "日常使用手册"
+    }
+  ]
+}

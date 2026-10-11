@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import VideoSlot from './VideoSlot.astro';
+import { COPY, type Lang } from '../i18n/ui';
+import { VIDEOS, docsUrl, duration, localePath, url, vlabel } from '../lib/site';
+import synced from '../data/docs-sync.json';
+import { shortLabel } from '../data/docs-nav.mjs';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang];
+const tut = t.tutorials;
+const list = VIDEOS.filter((v) => v.pillar === 'tutorial');
+const docTitle = (slug: string) => {
+  const short = shortLabel(slug, lang);
+  if (short) return short;
+  const p = synced.pages.find((x) => x.slug === slug) as { title_en?: string; title_zh?: string } | undefined;
+  return (lang === 'zh' ? p?.title_zh : undefined) ?? p?.title_en ?? slug;
+};
+---
+
+<Base lang={lang} path="tutorials/" title={t.meta.tutorialsTitle} description={t.meta.tutorialsDescription}>
+  <section class="page-head">
+    <div class="wrap">
+      <p class="kicker">{tut.kicker}</p>
+      <h1>{tut.title}</h1>
+      <p class="page-head__intro">{tut.intro}</p>
+      <p><a class="link-arrow" href={url(localePath(lang, ''))}>{tut.tour} →</a></p>
+    </div>
+  </section>
+  <section class="section section--tight">
+    <div class="wrap">
+      <ol class="tutorials">
+        {
+          list.map((v) => (
+            <li class="tutorial" id={v.id.toLowerCase()}>
+              <figure class="frame tutorial__video">
+                <figcaption class="frame__bar">
+                  <span class="frame__dots" aria-hidden="true"><i /><i /><i /></span>
+                  <span class="frame__title">{vlabel(v.id, lang)}</span>
+                  <span class="frame__len">{duration(v)}</span>
+                </figcaption>
+                <VideoSlot id={v.id} lang={lang} variant="tutorial" />
+              </figure>
+              <div class="tutorial__text">
+                <p class="tutorial__meta">
+                  <span class="tag tag--ink">{vlabel(v.id, lang)}</span>
+                  <span class="cap">{tut.length}: {duration(v)}</span>
+                </p>
+                <h2>{v.title[lang]}</h2>
+                <p class="tutorial__desc">{v.description[lang]}</p>
+                {v.chapters && (
+                  <>
+                    <h3 class="cap">{tut.chapters}</h3>
+                    <ol class="chapters">
+                      {v.chapters[lang].map((c) => <li>{c}</li>)}
+                    </ol>
+                  </>
+                )}
+                {v.docs.length > 0 && (
+                  <>
+                    <h3 class="cap">{tut.related}</h3>
+                    <ul class="related">
+                      {v.docs.map((slug) => (
+                        <li>
+                          <a href={docsUrl(lang, slug)}>{docTitle(slug)}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+</Base>

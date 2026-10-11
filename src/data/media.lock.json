@@ -1,0 +1,759 @@
+{
+  "about": "Published video files of the site (written by pnpm sync:media). The files are GitHub Release assets of this repository: pnpm fetch:media downloads them into public/media/ and checks sha256; pnpm media:release-notes lists what to upload.",
+  "files": [
+    {
+      "id": "M-01",
+      "file": "M-01.en.vtt",
+      "path": "media/M-01/M-01.en.vtt",
+      "bytes": 1571,
+      "sha256": "c7b08bca3dd5f94f1d1ec0e55d5df4e2c568cd7b576b6136b82d37d33ca82b94",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.mp4",
+      "path": "media/M-01/M-01.mp4",
+      "bytes": 11546416,
+      "sha256": "ade84f25110708e7402f73d9b0ceb84bad57b146928a2fa741d279c80dbd8de6",
+      "duration_s": 67.4,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.poster-640.webp",
+      "path": "media/M-01/M-01.poster-640.webp",
+      "bytes": 7210,
+      "sha256": "acdfb63d0bb29461b0c1bc5402a9586b471658cbab048dddde41bf64973647cf",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.poster.jpg",
+      "path": "media/M-01/M-01.poster.jpg",
+      "bytes": 118840,
+      "sha256": "95708c69997c12d6a1850847698ae975c724d66cbc4c03666a06a363848bb752",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.poster.webp",
+      "path": "media/M-01/M-01.poster.webp",
+      "bytes": 16180,
+      "sha256": "776a917ccfdbd471f545477c43f6bca0476a4b9e9022e6a9db8236ecaf46ed69",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.webm",
+      "path": "media/M-01/M-01.webm",
+      "bytes": 13191457,
+      "sha256": "ebe8c08550d02079cd937b5db9b2760ffbae49f910ac74c89eaa7ffd7b6b06ae",
+      "duration_s": 67.4,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "M-01",
+      "file": "M-01.zh.vtt",
+      "path": "media/M-01/M-01.zh.vtt",
+      "bytes": 1369,
+      "sha256": "dab9872afe3f2a1533a5b0357e0b828a76bdba6bd932d33bcea1b5221774f73e",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.en.vtt",
+      "path": "media/V-02/V-02.en.vtt",
+      "bytes": 360,
+      "sha256": "9ac81d65a0a4d1cd9c4b400993d441b382c8b7830cf0496c8ac79180951499a6",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.mp4",
+      "path": "media/V-02/V-02.mp4",
+      "bytes": 2110720,
+      "sha256": "672496808325bd579fc390d75db33911ad11f415e1f69501ede2fa14bbfc1188",
+      "duration_s": 15.8,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.poster-640.webp",
+      "path": "media/V-02/V-02.poster-640.webp",
+      "bytes": 25082,
+      "sha256": "e5730d754ec43f9bf1dfc946f7ef5bc7ed78e21096b8beae5c537dc6a090eaaa",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.poster.jpg",
+      "path": "media/V-02/V-02.poster.jpg",
+      "bytes": 266956,
+      "sha256": "aec5252a96e3eee0d951f596863f78634ff5eaa35e231f038b1fe3e44f3f2e5d",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.poster.webp",
+      "path": "media/V-02/V-02.poster.webp",
+      "bytes": 64398,
+      "sha256": "779e7304c5b3bf7bb48fb3ef0c99ad4dca37e4de82b88c3033aeb60d1b41a0b6",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.webm",
+      "path": "media/V-02/V-02.webm",
+      "bytes": 2466745,
+      "sha256": "9a973c33ee2dadbc897ea2dcd3a8c626561db0ace7ab4b39df5f8b3e77f54caf",
+      "duration_s": 15.8,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-02",
+      "file": "V-02.zh.vtt",
+      "path": "media/V-02/V-02.zh.vtt",
+      "bytes": 345,
+      "sha256": "6b1e7acfb49830bcefcc3c959bd3083b1c7aedac198689778ff0b07aaa8defff",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.en.vtt",
+      "path": "media/V-03/V-03.en.vtt",
+      "bytes": 586,
+      "sha256": "aa3efb1bb25f80d2fb1e1abac833ee18870804fa5924d6b352fb8aeb845ad8bb",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.mp4",
+      "path": "media/V-03/V-03.mp4",
+      "bytes": 3329043,
+      "sha256": "f7d19c7fdc983d2e9ee772978a761d300e7feda620e4ef6f01d08f66016db300",
+      "duration_s": 25.7,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.poster-640.webp",
+      "path": "media/V-03/V-03.poster-640.webp",
+      "bytes": 10748,
+      "sha256": "cb4d0962074606f3fb2a7710d444f173ee052d5215cffb00dd2337c9185c94e9",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.poster.jpg",
+      "path": "media/V-03/V-03.poster.jpg",
+      "bytes": 135831,
+      "sha256": "8eb2ae61c3d5af03fc803b72bb4b9937dacfb425b137fabaea6a52250accbf14",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.poster.webp",
+      "path": "media/V-03/V-03.poster.webp",
+      "bytes": 25102,
+      "sha256": "f6b6c5a55bb062f274bc2336c121df3c7796892be49ad43285025cf0592995d1",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.webm",
+      "path": "media/V-03/V-03.webm",
+      "bytes": 4228158,
+      "sha256": "dd0a8ed2bfe1b63a78d9a3058f677e3afed701a97d4f73fa2250d2e8b797707d",
+      "duration_s": 25.7,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-03",
+      "file": "V-03.zh.vtt",
+      "path": "media/V-03/V-03.zh.vtt",
+      "bytes": 442,
+      "sha256": "a4031f587382f7d47cf0670c2a624d65b7ba605cb0d7844bf79998e665546a3d",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.en.vtt",
+      "path": "media/V-04/V-04.en.vtt",
+      "bytes": 565,
+      "sha256": "28f36a6e649cd9997eb3b3dedb6f73aa7eb128385e3f23cf51f5aba2e3c7018d",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.mp4",
+      "path": "media/V-04/V-04.mp4",
+      "bytes": 5480323,
+      "sha256": "0bd80b09c277117a8938c1a828a6a2f335d80687fd2957f2712b07363cf01b10",
+      "duration_s": 24.3,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.poster-640.webp",
+      "path": "media/V-04/V-04.poster-640.webp",
+      "bytes": 20008,
+      "sha256": "73249de3629fe54cda5e2afb54e590d9ebba29e0e55aad789e48484ec977c737",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.poster.jpg",
+      "path": "media/V-04/V-04.poster.jpg",
+      "bytes": 200298,
+      "sha256": "5699a5226ac78100a6ff9bfe68b8f676355d8714e14ee534c467aab39ec812d6",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.poster.webp",
+      "path": "media/V-04/V-04.poster.webp",
+      "bytes": 52418,
+      "sha256": "327f0234ae97515213286ca1e8959b8f24f5372d485a0692730ac4bd29bbd993",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.webm",
+      "path": "media/V-04/V-04.webm",
+      "bytes": 6994226,
+      "sha256": "660b0bba9b94e82014beae1f0200b2e6cf9a39ee2e4ad723e91d9a8cedbf53cb",
+      "duration_s": 24.3,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-04",
+      "file": "V-04.zh.vtt",
+      "path": "media/V-04/V-04.zh.vtt",
+      "bytes": 569,
+      "sha256": "aa2dfc3abe32a0524127e3a31b0bc896920ff6580b545a706e2711ff2188429b",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.en.vtt",
+      "path": "media/V-05/V-05.en.vtt",
+      "bytes": 489,
+      "sha256": "3590aca9ebaeff96809fb41c30e8dae3feca3761374e345515d66c9d51ed7402",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.mp4",
+      "path": "media/V-05/V-05.mp4",
+      "bytes": 4570123,
+      "sha256": "53886142868d7d1118c97dbd27b282b31eada5bb4927921a71895eb4d53539c0",
+      "duration_s": 20.7,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.poster-640.webp",
+      "path": "media/V-05/V-05.poster-640.webp",
+      "bytes": 5880,
+      "sha256": "0c010186d11d22753ed68f906fb6067d7126dbe18177e60e6d84106591220ebb",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.poster.jpg",
+      "path": "media/V-05/V-05.poster.jpg",
+      "bytes": 107697,
+      "sha256": "c34607ef0af50363229712201e667829e50ead7fb37ebfca06b4ada8bc823e76",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.poster.webp",
+      "path": "media/V-05/V-05.poster.webp",
+      "bytes": 14736,
+      "sha256": "8b957183b0a0dc58c6d024db24957327ab929234f09ba2d0b656bbb3cba5340c",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.webm",
+      "path": "media/V-05/V-05.webm",
+      "bytes": 5442420,
+      "sha256": "f9df41440d5f9825ef6f552696bc16646fad972e2061b271172974af7c42e884",
+      "duration_s": 20.7,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-05",
+      "file": "V-05.zh.vtt",
+      "path": "media/V-05/V-05.zh.vtt",
+      "bytes": 453,
+      "sha256": "338b7b4ff73dcc74a04ee0fbc1af636ad866b1eebe8428bb977795191e77c9fd",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.en.vtt",
+      "path": "media/V-06/V-06.en.vtt",
+      "bytes": 368,
+      "sha256": "fe72442d9109c865a8c8ab19630b0bbfbc471e3ac1930ae1bbffd9b1bf9436da",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.mp4",
+      "path": "media/V-06/V-06.mp4",
+      "bytes": 1781502,
+      "sha256": "3cb08d533edb775daf1b64fd83bac4a9540679cfabaf7cc8fe22eeff78dd2969",
+      "duration_s": 17.1,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.poster-640.webp",
+      "path": "media/V-06/V-06.poster-640.webp",
+      "bytes": 16112,
+      "sha256": "0c72b5e27fd4d1bcbefd03b204883ca4b399fd3f3d49aa5c5a59abb2ac6b5d91",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.poster.jpg",
+      "path": "media/V-06/V-06.poster.jpg",
+      "bytes": 161935,
+      "sha256": "835a853b3f43561b942dab2fe16954b877b4e415fc92e85860bc329586d58c75",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.poster.webp",
+      "path": "media/V-06/V-06.poster.webp",
+      "bytes": 40056,
+      "sha256": "5c636bd2c300c2e84e0c997712823ccccc7ee53a0622c0ff97fc9c8a357817e9",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.webm",
+      "path": "media/V-06/V-06.webm",
+      "bytes": 1841647,
+      "sha256": "92af7d68f9a2a19ee6a5d9275ce8c2d81ff4b75cca1825f47194b4820244b766",
+      "duration_s": 17.1,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-06",
+      "file": "V-06.zh.vtt",
+      "path": "media/V-06/V-06.zh.vtt",
+      "bytes": 315,
+      "sha256": "175d6085b13a45f81416eb24f79bbeffe3db0aa14467938831b9fce025c5db97",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.en.vtt",
+      "path": "media/V-07/V-07.en.vtt",
+      "bytes": 557,
+      "sha256": "d75b1edaf6cce1fc5928d3fd1570a93c28a96c5e6d001e4e530f484ff3a8a94c",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.mp4",
+      "path": "media/V-07/V-07.mp4",
+      "bytes": 6058149,
+      "sha256": "911cbb101bd3b7243be5683bbfb932c3d56ea92214f73901b6ffab9a7f662d24",
+      "duration_s": 22.3,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.poster-640.webp",
+      "path": "media/V-07/V-07.poster-640.webp",
+      "bytes": 21118,
+      "sha256": "15fe6df493b9052be5644f0b8e5d7498b2f13eec39baeb295bbe4a4e6e834c5a",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.poster.jpg",
+      "path": "media/V-07/V-07.poster.jpg",
+      "bytes": 235052,
+      "sha256": "2484f596cb9f3e3fee7dfe75a783d0003accc91483aaca4290646ad8dc1fef38",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.poster.webp",
+      "path": "media/V-07/V-07.poster.webp",
+      "bytes": 61560,
+      "sha256": "9b77d9e6dde47948c6e1d5f297aafe07984f56a375258b69ec2f239e6ba9e139",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.webm",
+      "path": "media/V-07/V-07.webm",
+      "bytes": 7112503,
+      "sha256": "266cdc3da774b90035da565e2e143ed5bb222402e8012c062cb459f25cdbbd24",
+      "duration_s": 22.3,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-07",
+      "file": "V-07.zh.vtt",
+      "path": "media/V-07/V-07.zh.vtt",
+      "bytes": 446,
+      "sha256": "6fa99af3be1a74e033b16f5cabcd3e38a4fed3c769cf4688246dea4dbe9f85c4",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.en.vtt",
+      "path": "media/V-10/V-10.en.vtt",
+      "bytes": 310,
+      "sha256": "d1f5e758e5778195d6ee77a05063580e17207e43536840e425aafc462886d516",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.mp4",
+      "path": "media/V-10/V-10.mp4",
+      "bytes": 1154486,
+      "sha256": "0467941d376bc801b842c89dcd1e3957acaa0001e6d82ccbf7a85dec59476df3",
+      "duration_s": 13.5,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.poster-640.webp",
+      "path": "media/V-10/V-10.poster-640.webp",
+      "bytes": 20926,
+      "sha256": "66051894f3330b0cb72df648a840d49df73925eb9cae3e3a5d4f4d78c686b631",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.poster.jpg",
+      "path": "media/V-10/V-10.poster.jpg",
+      "bytes": 208773,
+      "sha256": "5a56133b1ca1c35f8eb791f38d4180c5bbc0f655bdbda3fdd0a5a6969ab681ac",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.poster.webp",
+      "path": "media/V-10/V-10.poster.webp",
+      "bytes": 53980,
+      "sha256": "b8b4f524ede6b587382bbe8a3bed5d1c756ee0cf6e1c7797cf0ca325c3e3fafe",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.webm",
+      "path": "media/V-10/V-10.webm",
+      "bytes": 1549753,
+      "sha256": "2be2fb992dc9bfcb2ac964f19cdc4ab2d94952551c1d28c08c311157f6c900c8",
+      "duration_s": 13.5,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-10",
+      "file": "V-10.zh.vtt",
+      "path": "media/V-10/V-10.zh.vtt",
+      "bytes": 297,
+      "sha256": "9629205eb21401848955fe4362d19dbae32f59652f6f91028bca2eda236a80b2",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.en.vtt",
+      "path": "media/V-11/V-11.en.vtt",
+      "bytes": 247,
+      "sha256": "2e63ae7fcaf22b451a341f79564c584f2222288a20896e6e17a9f2bffbee760a",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.mp4",
+      "path": "media/V-11/V-11.mp4",
+      "bytes": 1118072,
+      "sha256": "e3149f14fe57dc8646c5c58e7a04b0246559cd663f8a0bc016dad721c9d4f8d7",
+      "duration_s": 12.1,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.poster-640.webp",
+      "path": "media/V-11/V-11.poster-640.webp",
+      "bytes": 23226,
+      "sha256": "51f8cd0fcbea4fc893184319e462e62590364db9437a5350278c9766f664c187",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.poster.jpg",
+      "path": "media/V-11/V-11.poster.jpg",
+      "bytes": 260567,
+      "sha256": "edccb00631eb77b581c848861ae9a50351e33215d073a51f9a47bd29d602f788",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.poster.webp",
+      "path": "media/V-11/V-11.poster.webp",
+      "bytes": 67058,
+      "sha256": "74e81357d2556e029019d1f4cefac03c488bde9d634230db817f8e1de894cef5",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.webm",
+      "path": "media/V-11/V-11.webm",
+      "bytes": 1338014,
+      "sha256": "a6d3d365d8a6e4e06a5c4be2d5be3e243ca191018c2380725f26bffa0825f100",
+      "duration_s": 12.1,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-11",
+      "file": "V-11.zh.vtt",
+      "path": "media/V-11/V-11.zh.vtt",
+      "bytes": 212,
+      "sha256": "d858507a24d7348ff8a5444574491c865f153a8b9939b7531041159c10d20091",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.en.vtt",
+      "path": "media/V-12/V-12.en.vtt",
+      "bytes": 601,
+      "sha256": "b8722c8ab151b258842c3e60603978a7a613f5971d6eb46e5d3a25879b6b5889",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.mp4",
+      "path": "media/V-12/V-12.mp4",
+      "bytes": 3029033,
+      "sha256": "b7b38dd530f3439b3ce7bff7c2bd429b373aaeba4d788da17579d4b9f07b5412",
+      "duration_s": 26,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.poster-640.webp",
+      "path": "media/V-12/V-12.poster-640.webp",
+      "bytes": 13292,
+      "sha256": "7d537dbed2efb1a92d78859a273520d36aceba7440a2e9bbb35c610c65cd84cd",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.poster.jpg",
+      "path": "media/V-12/V-12.poster.jpg",
+      "bytes": 173387,
+      "sha256": "c1bc7a73669cdcb89e70e3ee38911cd1dbb34ab18f5acaaf36b01ad6e4280068",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.poster.webp",
+      "path": "media/V-12/V-12.poster.webp",
+      "bytes": 37522,
+      "sha256": "52f02d012af5b0057ed51b386520383dedb675110df7200fd05a30cc7cafee9c",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.webm",
+      "path": "media/V-12/V-12.webm",
+      "bytes": 2940448,
+      "sha256": "0ac600c834ae5bbfddddf8635639c99597d1c1e8ceab64f1d779e501cf5822f3",
+      "duration_s": 26,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-12",
+      "file": "V-12.zh.vtt",
+      "path": "media/V-12/V-12.zh.vtt",
+      "bytes": 574,
+      "sha256": "da54a2b855f7bea58c172d2e404b0855c1d8ea8fe1f3b7892915e7807703903e",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.en.vtt",
+      "path": "media/V-13/V-13.en.vtt",
+      "bytes": 352,
+      "sha256": "74e56ad752857d9c275022f73a1f34644e4148af83b36b28353370b0430c808c",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.mp4",
+      "path": "media/V-13/V-13.mp4",
+      "bytes": 2518217,
+      "sha256": "86f6fe8dc1775f35bd3e833abffe3728a73db518d0b883f37cd758e076a8138b",
+      "duration_s": 16,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.poster-640.webp",
+      "path": "media/V-13/V-13.poster-640.webp",
+      "bytes": 21718,
+      "sha256": "3b07dad4252eb940052f7e2b30e9c3de1e4f456a7a48798bcba04bb5fe6fb10a",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.poster.jpg",
+      "path": "media/V-13/V-13.poster.jpg",
+      "bytes": 242433,
+      "sha256": "556477d0da8325044bdeaf1f1719012143cc54d38fd1a32abf4a41f54b51a097",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.poster.webp",
+      "path": "media/V-13/V-13.poster.webp",
+      "bytes": 62546,
+      "sha256": "609803c76022e434cc45945c492822ee541aa7787deb1d8f7d9ab7c0d0f3000f",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.webm",
+      "path": "media/V-13/V-13.webm",
+      "bytes": 3068935,
+      "sha256": "31ae887725978a7ad7a60180b05b128844b3f4cf00d0e780c7d80779398452e7",
+      "duration_s": 16,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-13",
+      "file": "V-13.zh.vtt",
+      "path": "media/V-13/V-13.zh.vtt",
+      "bytes": 336,
+      "sha256": "33bc5fb0b95ccc69660fce98f35c2ce76fa779ec2dec3d1f70b3771ad04fbc32",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.en.vtt",
+      "path": "media/V-16/V-16.en.vtt",
+      "bytes": 384,
+      "sha256": "1df2dc14dc0861efd87f7e7635ff32068aaa0038b1a7aa26fbc5cffc828d179a",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.mp4",
+      "path": "media/V-16/V-16.mp4",
+      "bytes": 1947103,
+      "sha256": "ab2caa39525f964afcc5ff8d37e8a75571a8faec93249c53dcc599dd472132fe",
+      "duration_s": 16.9,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.poster-640.webp",
+      "path": "media/V-16/V-16.poster-640.webp",
+      "bytes": 18298,
+      "sha256": "439f70fbb4955ff0102faac18a58adf0074a17edc8bf76713ab2cb211daf5f4a",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.poster.jpg",
+      "path": "media/V-16/V-16.poster.jpg",
+      "bytes": 168092,
+      "sha256": "c61f2cc9713a4f14cb095c99357736f33e69a115e0ad876e0b2c9c383279bd78",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.poster.webp",
+      "path": "media/V-16/V-16.poster.webp",
+      "bytes": 40256,
+      "sha256": "7be9fddaff41edc2575f96f80f44d4f1ffe7d23ca4b309b880d40594df85fe0c",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.webm",
+      "path": "media/V-16/V-16.webm",
+      "bytes": 1997815,
+      "sha256": "4afdcb4e53aa675cf08aa5208ec871fac3cb587bb9ab769125d7ffe50dcf9949",
+      "duration_s": 16.9,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-16",
+      "file": "V-16.zh.vtt",
+      "path": "media/V-16/V-16.zh.vtt",
+      "bytes": 320,
+      "sha256": "a4ba9f9249550bb71f200582dde58a60e6e616ab807d1949e6e7368f6b767684",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.en.vtt",
+      "path": "media/V-17/V-17.en.vtt",
+      "bytes": 343,
+      "sha256": "7e4fde3bdcfae62991f7c5252f9fa3f8fd7e90768f004ec881779a1d21db82fa",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.mp4",
+      "path": "media/V-17/V-17.mp4",
+      "bytes": 2279483,
+      "sha256": "876136c9f5cca9b195c0e95af73903beac18f127bba554d310101f999c5da5f6",
+      "duration_s": 16.4,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.poster-640.webp",
+      "path": "media/V-17/V-17.poster-640.webp",
+      "bytes": 12440,
+      "sha256": "90fffbdf2d20e1bc664dce378ac8bfdbea7b0b5e0d0026ef829f181b8873c6a2",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.poster.jpg",
+      "path": "media/V-17/V-17.poster.jpg",
+      "bytes": 140194,
+      "sha256": "fdd159bca156b161b0f2f31185b45759162d61a9736f6f2828becb24c96d6040",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.poster.webp",
+      "path": "media/V-17/V-17.poster.webp",
+      "bytes": 30092,
+      "sha256": "4988a672f68c09306a32894807f9f9c26ffe21a99748927f867d4cea663fcaee",
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.webm",
+      "path": "media/V-17/V-17.webm",
+      "bytes": 2509346,
+      "sha256": "ba414aac15fe0662377cf235134ac2095845675064ec406901954614d67ae35c",
+      "duration_s": 16.4,
+      "release": "media-2026-10-10"
+    },
+    {
+      "id": "V-17",
+      "file": "V-17.zh.vtt",
+      "path": "media/V-17/V-17.zh.vtt",
+      "bytes": 350,
+      "sha256": "08c37b58c7ba06d6a20d4e336369727408b76994884a275f6c6deeae3b03b8ac",
+      "release": "media-2026-10-10"
+    }
+  ]
+}

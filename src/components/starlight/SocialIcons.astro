@@ -1,0 +1,30 @@
+---
+// Starlight header, right side: links back to the landing pages, then the default social icons.
+import Default from '@astrojs/starlight/components/SocialIcons.astro';
+import { localePath, url } from '../../lib/site';
+const lang = Astro.locals.starlightRoute.locale === 'zh' ? 'zh' : 'en';
+const labels = lang === 'zh' ? { home: '首页', tutorials: '教程' } : { home: 'Home', tutorials: 'Tutorials' };
+---
+
+<a class="sl-site-link" href={url(localePath(lang, ''))}>{labels.home}</a>
+<a class="sl-site-link" href={url(localePath(lang, 'tutorials/'))}>{labels.tutorials}</a>
+<Default />
+
+<style>
+  .sl-site-link {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    color: var(--sl-color-white);
+    text-decoration: none;
+    padding: 0.25rem 0.5rem;
+    border: 2px solid transparent;
+    border-radius: 7px;
+  }
+  .sl-site-link:hover {
+    border-color: var(--ink);
+    background: var(--hi);
+    color: var(--hi-ink);
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+import SectionHead from './SectionHead.astro';
+import VideoSlot from '../VideoSlot.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].pillars;
+const order = ['find', 'tune', 'read', 'phone'] as const;
+---
+
+<section class="section pillars" id="what" aria-labelledby="what-title">
+  <div class="wrap">
+    <SectionHead id="what-title" kicker={t.kicker} title={t.title} intro={t.intro} />
+    <ol class="pillars__grid">
+      {
+        order.map((key, i) => {
+          const p = t.items[key];
+          return (
+            <li class:list={['pillar', `pillar--${key}`, { 'pillar--core': key === 'tune' }]}>
+              <div class="pillar__head">
+                <span class="pillar__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+                <span class="tag" data-pillar={key}>{p.tag}</span>
+                {key === 'tune' && <span class="tag tag--ink">{t.core}</span>}
+              </div>
+              <h3 class="pillar__title">{p.title}</h3>
+              <p class="pillar__body">{p.body}</p>
+              <ul class="pillar__points">
+                {p.points.map((pt) => <li>{pt}</li>)}
+              </ul>
+              <div class="pillar__video">
+                <VideoSlot id={p.video} lang={lang} variant="pillar" />
+              </div>
+            </li>
+          );
+        })
+      }
+    </ol>
+    <p class="baseline" aria-label={lang === 'zh' ? '底层保证' : 'Underneath it all'}>
+      <span class="baseline__prompt" aria-hidden="true">&gt;</span>
+      {t.base.map((b, i) => (
+        <>
+          {i > 0 && <span class="baseline__sep" aria-hidden="true"> · </span>}
+          <span>{b}</span>
+        </>
+      ))}
+      <span class="cursor" aria-hidden="true"></span>
+    </p>
+  </div>
+</section>

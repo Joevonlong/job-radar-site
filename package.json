@@ -1,0 +1,37 @@
+{
+  "name": "job-radar-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Website for Job Radar (landing page, tutorials and docs), published with GitHub Pages.",
+  "license": "AGPL-3.0-only",
+  "packageManager": "pnpm@11.15.1",
+  "engines": {
+    "node": ">=22.12.0 <23"
+  },
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "check:links": "node scripts/check-links.mjs",
+    "sync": "node scripts/sync-brand.mjs && node scripts/sync-media.mjs && node scripts/sync-docs.mjs",
+    "sync:brand": "node scripts/sync-brand.mjs",
+    "sync:media": "node scripts/sync-media.mjs",
+    "sync:docs": "node scripts/sync-docs.mjs",
+    "fetch:media": "node scripts/fetch-media.mjs",
+    "media:release-notes": "node scripts/media-release-notes.mjs",
+    "shots": "node scripts/shots.mjs"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "0.42.6",
+    "@fontsource/archivo": "5.3.0",
+    "@fontsource/archivo-black": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@fontsource/noto-sans-sc": "5.3.0",
+    "astro": "7.3.8",
+    "sharp": "0.35.5"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

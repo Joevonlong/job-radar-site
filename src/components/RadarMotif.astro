@@ -1,0 +1,36 @@
+---
+// Background radar motif from the social preview: rings and a dot matrix in --jr-motif (decorative only).
+interface Props {
+  class?: string;
+}
+const cells: { x: number; y: number; lit: number }[] = [];
+const n = 15;
+for (let c = 0; c < n; c++) {
+  for (let r = 0; r < n; r++) {
+    const x = c - (n - 1) / 2;
+    const y = r - (n - 1) / 2;
+    const d = Math.hypot(x, y);
+    if (d > 7.2) continue;
+    // a sweep trail in the upper right quadrant, like the logo's afterglow
+    const a = ((Math.atan2(x, -y) * 180) / Math.PI + 360) % 360;
+    const back = (45 - a + 360) % 360;
+    const lit = back < 30 ? 1 : back < 60 ? 0.72 : back < 90 ? 0.46 : 0;
+    cells.push({ x: 300 + x * 36, y: 300 + y * 36, lit });
+  }
+}
+---
+
+<svg class:list={['radar-motif', Astro.props.class]} viewBox="0 0 600 600" aria-hidden="true" focusable="false">
+  <circle cx="300" cy="300" r="296" fill="none" stroke="var(--jr-motif)" stroke-width="2"></circle>
+  <circle cx="300" cy="300" r="200" fill="none" stroke="var(--jr-motif)" stroke-width="2"></circle>
+  <circle cx="300" cy="300" r="104" fill="none" stroke="var(--jr-motif)" stroke-width="2"></circle>
+  {
+    cells.map(({ x, y, lit }) =>
+      lit ? (
+        <rect x={x - 13 * lit} y={y - 13 * lit} width={26 * lit} height={26 * lit} rx="2" fill="var(--jr-motif)" />
+      ) : (
+        <rect x={x - 3} y={y - 3} width="6" height="6" rx="1" fill="var(--jr-motif)" />
+      ),
+    )
+  }
+</svg>

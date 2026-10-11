@@ -1,0 +1,22 @@
+# dependencies and build output
+node_modules/
+dist/
+.astro/
+
+# screenshots from `pnpm shots` (large, local only)
+.shots/
+
+# video files: GitHub Release assets listed in src/data/media.lock.json (pnpm sync:media / pnpm fetch:media)
+public/media/
+
+# per-machine settings (paths for the maintainer sync scripts)
+.env.local
+
+# OS / editors
+.DS_Store
+._*
+.vscode/
+.idea/
+*.log
+# README clips (silent WebP) for the product README, served from Pages /readme/ (kept local, copied in before a deploy)
+public/readme/

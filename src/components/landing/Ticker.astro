@@ -1,0 +1,28 @@
+---
+// Terminal ticker (design system: "跑马灯", one of the four allowed infinite loops). Invented example jobs.
+import { COPY, TICKER, type Lang } from '../../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].ticker;
+const notStated = lang === 'zh' ? '未写薪资' : 'pay not stated';
+const items = TICKER.map((j) => ({ ...j, payText: j.pay ?? notStated }));
+---
+
+<div class="ticker" role="region" aria-label={t.srLabel}>
+  <span class="ticker__label"><span class="dot" aria-hidden="true"></span>{t.label}</span>
+  <div class="ticker__viewport">
+    <ul class="ticker__track">
+      {
+        [0, 1].map((copy) =>
+          items.map((j) => (
+            <li aria-hidden={copy === 1 ? 'true' : undefined}>
+              <b class="ticker__new">NEW</b> {j.title} · {j.company} · {j.city} · <span class:list={['ticker__pay', { 'is-none': !j.pay }]}>{j.payText}</span> · <span class="ticker__score">{j.score}/100</span>
+            </li>
+          )),
+        )
+      }
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,39 @@
+---
+// Starlight footer: the default (edit link, pagination) plus where these pages come from.
+import Default from '@astrojs/starlight/components/Footer.astro';
+import synced from '../../data/docs-sync.json';
+import { PRODUCT_BRANCH, PRODUCT_REPO } from '../../../site.config.mjs';
+const zh = Astro.locals.starlightRoute.locale === 'zh';
+const short = synced.commit.slice(0, 7);
+// The product repo may be re-created before launch (fresh history), so link the branch and only name the commit.
+const commitUrl = `${PRODUCT_REPO}/tree/${PRODUCT_BRANCH}/docs`;
+---
+
+<Default />
+<p class="sl-synced">
+  {
+    zh ? (
+      <>
+        本页同步自产品库 <a href={commitUrl}>Joevonlong/job-radar@{short}</a> 的 <code>docs/</code>。Job Radar 与任何招聘网站均无关联。代码采用 AGPL-3.0-only 许可。
+      </>
+    ) : (
+      <>
+        Synced from <code>docs/</code> in <a href={commitUrl}>Joevonlong/job-radar@{short}</a>. Job Radar is not affiliated with any job board. Code under AGPL-3.0-only.
+      </>
+    )
+  }
+</p>
+
+<style>
+  .sl-synced {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 2px dashed var(--grid);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--sl-color-gray-3);
+  }
+  .sl-synced a {
+    color: inherit;
+  }
+</style>

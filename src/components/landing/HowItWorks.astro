@@ -1,0 +1,89 @@
+---
+// "How it works": the four steps of a cycle, then where each part runs (product README "Architecture",
+// docs/ai-providers.md "What runs where"). Plain HTML so it reads on a phone and in a screen reader.
+import SectionHead from './SectionHead.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].how;
+const d = t.diagram;
+const services = [
+  { name: 'web', desc: d.web },
+  { name: 'runner', desc: d.runner },
+  { name: 'jobspy', desc: d.jobspy },
+  { name: 'db', desc: d.db },
+];
+---
+
+<section class="section how" id="how" aria-labelledby="how-title">
+  <div class="wrap">
+    <SectionHead id="how-title" kicker={t.kicker} title={t.title} />
+    <ol class="steps">
+      {
+        t.steps.map((s, i) => (
+          <li class="step">
+            <span class="step__n">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="step__name">{s.name}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+
+    <figure class="arch" aria-labelledby="arch-title">
+      <figcaption id="arch-title" class="cap arch__title">{d.title}</figcaption>
+      <div class="arch__grid">
+        <div class="arch__side arch__side--left">
+          <div class="node node--out">
+            <p class="node__name">{d.sources}</p>
+            <p class="node__desc">{d.sourcesBody}</p>
+          </div>
+          <p class="link link--left"><span class="link__arrow" aria-hidden="true"></span><span class="link__label">{d.sourcesArrow}</span></p>
+        </div>
+
+        <div class="arch__machine">
+          <p class="arch__machine-label"><span class="dot" aria-hidden="true"></span>{d.machine}</p>
+          <div class="arch__boxes">
+            <div class="box">
+              <p class="box__head">{d.compose}</p>
+              <ul class="box__list">
+                {services.map((s) => <li><code>{s.name}</code><span>{s.desc}</span></li>)}
+              </ul>
+            </div>
+            <div class="box box--host">
+              <p class="box__head">{d.host}</p>
+              <ul class="box__list">
+                <li><code>ai-worker</code><span>{d.worker}</span></li>
+              </ul>
+              <p class="box__note">{d.noKeys}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="arch__side arch__side--right">
+          <p class="link link--right"><span class="link__arrow" aria-hidden="true"></span><span class="link__label">{d.aiArrow}</span></p>
+          <div class="node node--out node--ai">
+            <p class="node__name">{d.ai}</p>
+            <p class="node__desc">{d.aiBody}</p>
+          </div>
+          <p class="link link--right"><span class="link__arrow" aria-hidden="true"></span><span class="link__label">{d.tgArrow}</span></p>
+          <div class="node node--out node--tg">
+            <p class="node__name">{d.tg}</p>
+            <p class="node__desc">{d.tgBody}</p>
+          </div>
+        </div>
+
+        <div class="arch__you">
+          <p class="link link--up"><span class="link__arrow" aria-hidden="true"></span><span class="link__label">127.0.0.1:3000</span></p>
+          <div class="node node--you">
+            <p class="node__name">{d.you}</p>
+            <p class="node__desc">{d.youBody}</p>
+          </div>
+        </div>
+      </div>
+    </figure>
+    <p class="how__note">{t.note}</p>
+  </div>
+</section>

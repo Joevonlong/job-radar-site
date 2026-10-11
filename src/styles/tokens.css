@@ -1,0 +1,167 @@
+/*
+ * Job Radar design tokens for the website.
+ * Values: the product's design system v3 (2026-10-08: neo-brutal structure + terminal data; light = "paper",
+ * dark = "terminal") and the brand kit (logo "Pixel Scope").
+ * The site switches themes with <html data-theme="light|dark"> (same attribute and storage key as Starlight), so the
+ * product's `.light` / `.dark` classes become attribute selectors here. Change a value there first, then copy it here.
+ */
+
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* v3 roles */
+  --bg: #f1f0e8;
+  --card-bg: #ffffff;
+  --ink: #111111;
+  --ink-2: #4d4b45;
+  --ink-3: #68655e;
+  --grid: #d9d6ca;
+  --soft: #e7e5db;
+  --hi: #ffd23f;
+  --hi-ink: #111111;
+  --meter: #111111;
+  --shadow-c: #111111;
+  --signal-t1: #d18f00;
+  --signal-t2: #0e9f8e;
+  --signal-t3: #ef5b3a;
+  --signal-t4: #2f7fd8;
+  --signal-olive: #7a9a1e;
+  --signal-violet: #ad6ad6;
+  --signal-slate: #9aa6b8;
+  --signal-pink: #d9468f;
+  --on-signal: #111111;
+  --good: #1a7f4b;
+  --warn: #f2c200;
+  --bad: #d63a2f;
+  --on-bad: #ffffff;
+  --term-bg: #111111;
+  --term-ink: #e8e3d3;
+  --term-amber: #ffb000;
+  --term-green: #36d27a;
+  --term-dim: #8a8576;
+  --term-bad: #ff5f56;
+  --term-line: #2c2b24;
+  --focus: #2f7fd8;
+
+  /* brand (logo roles, paper) */
+  --jr-mark-face: #ffd23f;
+  --jr-mark-rim: #111111;
+  --jr-mark-cell: #111111;
+  --jr-mark-blip: #ffffff;
+  --jr-mark-shadow: #111111;
+  --jr-wordmark: #111111;
+  --jr-motif: #d9d6ca;
+
+  /* type */
+  --font-display: 'Archivo Black', 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --font-sans: 'Archivo', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', ui-monospace, monospace;
+
+  /* shape */
+  --bw: 2px;
+  --r-cell: 2px;
+  --r-tag: 7px;
+  --r-btn: 8px;
+  --r-card: 10px;
+  --r-frame: 14px;
+  --r-pill: 999px;
+  --e1: 2px 2px 0 var(--shadow-c);
+  --e2: 3px 3px 0 var(--shadow-c);
+  --e3: 4px 4px 0 var(--shadow-c);
+  --e4: 6px 6px 0 var(--shadow-c);
+  --e5: 8px 8px 0 var(--shadow-c);
+  --hatch: repeating-linear-gradient(135deg, var(--grid) 0 1.5px, transparent 1.5px 7px);
+
+  /* spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-14: 56px;
+
+  /* motion */
+  --dur-press: 90ms;
+  --dur-fast: 140ms;
+  --dur-base: 220ms;
+  --dur-slow: 360ms;
+  --dur-count: 1100ms;
+  --step: 35ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b0b0a;
+  --card-bg: #12120f;
+  --ink: #e8e3d3;
+  --ink-2: #b3ad9c;
+  --ink-3: #898475;
+  --grid: #2c2b24;
+  --soft: #1b1b17;
+  --hi: #ffb000;
+  --hi-ink: #0b0b0a;
+  --meter: #36d27a;
+  --shadow-c: #ffb000;
+  --signal-t1: #bd8200;
+  --signal-t2: #1aa38d;
+  --signal-t3: #e8593a;
+  --signal-t4: #3a8ae0;
+  --good: #36d27a;
+  --bad: #ff5f56;
+  --on-bad: #0b0b0a;
+  --term-bg: #050504;
+  --focus: #3a8ae0;
+
+  --jr-mark-face: #ffb000;
+  --jr-mark-rim: #e8e3d3;
+  --jr-mark-cell: #0b0b0a;
+  --jr-mark-blip: #e8e3d3;
+  --jr-mark-shadow: #ffb000;
+  --jr-wordmark: #e8e3d3;
+  --jr-motif: #2c2b24;
+}
+
+/* No script yet (or disabled): follow the system until the theme script sets data-theme. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #0b0b0a;
+    --card-bg: #12120f;
+    --ink: #e8e3d3;
+    --ink-2: #b3ad9c;
+    --ink-3: #898475;
+    --grid: #2c2b24;
+    --soft: #1b1b17;
+    --hi: #ffb000;
+    --hi-ink: #0b0b0a;
+    --meter: #36d27a;
+    --shadow-c: #ffb000;
+    --good: #36d27a;
+    --bad: #ff5f56;
+    --term-bg: #050504;
+    --jr-mark-face: #ffb000;
+    --jr-mark-rim: #e8e3d3;
+    --jr-mark-cell: #0b0b0a;
+    --jr-mark-blip: #e8e3d3;
+    --jr-mark-shadow: #ffb000;
+    --jr-wordmark: #e8e3d3;
+    --jr-motif: #2c2b24;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-press: 0ms;
+    --dur-fast: 0ms;
+    --dur-base: 0ms;
+    --dur-slow: 0ms;
+    --dur-count: 0ms;
+    --step: 0ms;
+  }
+}

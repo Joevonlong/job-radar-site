@@ -1,0 +1,62 @@
+---
+import SectionHead from './SectionHead.astro';
+import VideoSlot from '../VideoSlot.astro';
+import { COPY, type Lang, type Pillar } from '../../i18n/ui';
+import { VIDEOS, duration, vlabel } from '../../lib/site';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].gallery;
+const shorts = VIDEOS.filter((v) => v.kind === 'short' && v.status === 'ready');
+const pillars: Pillar[] = ['find', 'tune', 'read', 'phone', 'run'];
+---
+
+<section class="section gallery" id="features" aria-labelledby="features-title">
+  <div class="wrap">
+    <SectionHead id="features-title" kicker={t.kicker} title={t.title} intro={t.intro}>
+      <div class="filters" role="group" aria-label={t.filterLabel} data-filters>
+        <button type="button" class="filter" aria-pressed="true" data-filter="all">{t.all} <span class="filter__n">{shorts.length}</span></button>
+        {
+          pillars.map((p) => (
+            <button type="button" class="filter" aria-pressed="false" data-filter={p}>
+              <span class="filter__sw" data-pillar={p} aria-hidden="true" />
+              {t.pillars[p]} <span class="filter__n">{shorts.filter((v) => v.pillar === p).length}</span>
+            </button>
+          ))
+        }
+      </div>
+    </SectionHead>
+    <ul class="gallery__grid">
+      {
+        shorts.map((v) => (
+          <li class="feature" data-pillar={v.pillar}>
+            <VideoSlot id={v.id} lang={lang} variant="card" />
+            <div class="feature__body">
+              <p class="feature__meta">
+                <span>{vlabel(v.id, lang)} · {duration(v)}</span>
+                <span class="tag tag--sm" data-pillar={v.pillar}>{t.pillars[v.pillar as Pillar]}</span>
+              </p>
+              <h3 class="feature__title">{v.title[lang]}</h3>
+              <p class="feature__desc">{v.description[lang]}</p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-filters]').forEach((group) => {
+    const section = group.closest('section')!;
+    const cards = Array.from(section.querySelectorAll<HTMLElement>('.feature'));
+    group.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-filter]');
+      if (!btn) return;
+      const f = btn.dataset.filter;
+      group.querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      for (const c of cards) c.hidden = f !== 'all' && c.dataset.pillar !== f;
+    });
+  });
+</script>

@@ -1,0 +1,12 @@
+/*
+ * Self-hosted fonts (OFL-1.1, @fontsource 5.3.0): the same families as design system v3.
+ * Latin: Archivo 500/700/800 (UI), Archivo Black (headlines, big numbers), IBM Plex Mono 500/600 (data, labels).
+ * Chinese body text uses the system CJK font; Chinese headlines use Noto Sans SC 900 (cjk.css, sliced by unicode-range,
+ * so a page only downloads the glyph slices it shows).
+ */
+@import '@fontsource/archivo/500.css';
+@import '@fontsource/archivo/700.css';
+@import '@fontsource/archivo/800.css';
+@import '@fontsource/archivo-black/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';

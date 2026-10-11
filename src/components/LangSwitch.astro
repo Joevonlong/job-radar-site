@@ -1,0 +1,43 @@
+---
+import { type Lang } from '../i18n/ui';
+import { localePath, url } from '../lib/site';
+interface Props {
+  lang: Lang;
+  path: string;
+}
+const { lang, path } = Astro.props;
+const LANGS = [
+  { id: 'en' as Lang, short: 'EN', name: 'English', hreflang: 'en' },
+  { id: 'zh' as Lang, short: '中文', name: '中文', hreflang: 'zh-CN' },
+];
+const current = LANGS.find((l) => l.id === lang) ?? LANGS[0];
+---
+
+<details class="lang-switch">
+  <summary aria-label="Language / 语言" title="Language / 语言">
+    <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 12h18M12 3c2.6 2.6 3.8 5.6 3.8 9s-1.2 6.4-3.8 9c-2.6-2.6-3.8-5.6-3.8-9S9.4 5.6 12 3Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+    <span>{current.short}</span>
+    <svg class="lang-switch__caret" viewBox="0 0 12 12" width="10" height="10" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+  </summary>
+  <ul class="lang-switch__menu" role="list">
+    {LANGS.map((l) => (
+      <li>
+        <a href={url(localePath(l.id, path))} hreflang={l.hreflang} lang={l.hreflang} aria-current={l.id === lang ? 'page' : undefined}>
+          {l.name}
+        </a>
+      </li>
+    ))}
+  </ul>
+</details>
+
+<script>
+  // Close the language menu on an outside click or Escape.
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll<HTMLDetailsElement>('details.lang-switch[open]').forEach((d) => {
+      if (!d.contains(e.target as Node)) d.open = false;
+    });
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.querySelectorAll<HTMLDetailsElement>('details.lang-switch[open]').forEach((d) => (d.open = false));
+  });
+</script>

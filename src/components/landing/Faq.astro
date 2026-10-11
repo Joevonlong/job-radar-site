@@ -1,0 +1,37 @@
+---
+import SectionHead from './SectionHead.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+import { docsUrl } from '../../lib/site';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].faq;
+---
+
+<section class="section faq" id="faq" aria-labelledby="faq-title">
+  <div class="wrap faq__wrap">
+    <SectionHead id="faq-title" kicker={t.kicker} title={t.title} />
+    <div class="faq__list">
+      {
+        t.items.map((it, i) => (
+          <details class="qa" open={i === 0}>
+            <summary>
+              <span class="qa__n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="qa__q">{it.q}</span>
+              <span class="qa__icon" aria-hidden="true" />
+            </summary>
+            <div class="qa__a">
+              <p>{it.a}</p>
+              {'link' in it && it.link && (
+                <p>
+                  <a class="link-arrow" href={docsUrl(lang, it.link.slug)}>{it.link.label} →</a>
+                </p>
+              )}
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

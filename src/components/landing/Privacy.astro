@@ -1,0 +1,44 @@
+---
+import SectionHead from './SectionHead.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+import { docsUrl } from '../../lib/site';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].privacy;
+---
+
+<section class="section privacy" id="privacy" aria-labelledby="privacy-title">
+  <div class="wrap">
+    <SectionHead id="privacy-title" kicker={t.kicker} title={t.title} />
+    <div class="privacy__grid">
+      <ul class="checklist" aria-label={t.title}>
+        {
+          t.items.map((it) => (
+            <li>
+              <span class="checklist__box" aria-hidden="true">[✓]</span>
+              <span class="checklist__k">{it.k}</span>
+              <span class="checklist__v">{it.v}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="card leaves">
+        <h3 class="leaves__title">{t.leavesTitle}</h3>
+        <ul class="leaves__list">
+          {
+            t.leaves.map((l) => (
+              <li>
+                <span class="leaves__what">{l.what}</span>
+                <span class="leaves__arrow" aria-hidden="true">→</span>
+                <span class="leaves__to">{l.to}</span>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="leaves__end"><span class="hl hl--sm">{t.leavesEnd}</span> <a class="link-arrow" href={docsUrl(lang, 'privacy')}>{t.leavesLink} →</a></p>
+      </div>
+    </div>
+  </div>
+</section>

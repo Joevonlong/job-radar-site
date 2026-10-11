@@ -1,0 +1,28 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Ticker from './Ticker.astro';
+import Pillars from './Pillars.astro';
+import Gallery from './Gallery.astro';
+import HowItWorks from './HowItWorks.astro';
+import Install from './Install.astro';
+import Privacy from './Privacy.astro';
+import Faq from './Faq.astro';
+import { COPY, type Lang } from '../../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang];
+---
+
+<Base lang={lang} path="" title={t.meta.title} description={t.meta.description}>
+  <Hero lang={lang} />
+  <Ticker lang={lang} />
+  <Pillars lang={lang} />
+  <Gallery lang={lang} />
+  <HowItWorks lang={lang} />
+  <Install lang={lang} />
+  <Privacy lang={lang} />
+  <Faq lang={lang} />
+</Base>

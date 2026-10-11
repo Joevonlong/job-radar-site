@@ -1,0 +1,205 @@
+/*
+ * Starlight (docs section) in design system v3. Starlight's colour scale is inverted in light mode ("white" is the
+ * strongest text colour, "black" the page), so both themes map the same roles onto the v3 tokens.
+ */
+
+:root {
+  --sl-font: 'Archivo', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans CJK SC', sans-serif;
+  --sl-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --sl-content-width: 48rem;
+  --sl-nav-height: 4rem;
+}
+
+:root,
+::backdrop,
+:root[data-theme='dark'],
+[data-theme='dark'] ::backdrop {
+  --sl-color-white: #e8e3d3;
+  --sl-color-gray-1: #e8e3d3;
+  --sl-color-gray-2: #b3ad9c;
+  --sl-color-gray-3: #898475;
+  --sl-color-gray-4: #5a564b;
+  --sl-color-gray-5: #2c2b24;
+  --sl-color-gray-6: #1b1b17;
+  --sl-color-black: #0b0b0a;
+  --sl-color-accent-low: #3a2a00;
+  --sl-color-accent: #ffb000;
+  --sl-color-accent-high: #ffd27a;
+  --sl-color-text-accent: #ffb000;
+  --sl-color-bg-nav: #0b0b0a;
+  --sl-color-bg-sidebar: #0b0b0a;
+  --sl-color-bg-inline-code: #1b1b17;
+  --sl-color-hairline-light: #2c2b24;
+  --sl-color-hairline: #2c2b24;
+  --sl-color-hairline-shade: #0b0b0a;
+}
+
+:root[data-theme='light'],
+[data-theme='light'] ::backdrop {
+  --sl-color-white: #111111;
+  --sl-color-gray-1: #111111;
+  --sl-color-gray-2: #4d4b45;
+  --sl-color-gray-3: #68655e;
+  --sl-color-gray-4: #9a978d;
+  --sl-color-gray-5: #d9d6ca;
+  --sl-color-gray-6: #e7e5db;
+  --sl-color-gray-7: #f1f0e8;
+  --sl-color-black: #f1f0e8;
+  --sl-color-accent-low: #fff1bf;
+  --sl-color-accent: #ffd23f;
+  --sl-color-accent-high: #111111;
+  --sl-color-text-accent: #111111;
+  --sl-color-bg-nav: #f1f0e8;
+  --sl-color-bg-sidebar: #f1f0e8;
+  --sl-color-bg-inline-code: #e7e5db;
+  --sl-color-hairline-light: #d9d6ca;
+  --sl-color-hairline: #d9d6ca;
+  --sl-color-hairline-shade: #d9d6ca;
+}
+
+/* header: one 2px ink line, like the landing page */
+header.header {
+  border-bottom: 2px solid var(--ink);
+}
+.site-title img {
+  height: 30px;
+  width: auto;
+}
+
+/* sidebar: current page = yellow block with ink border (selected row in the product) */
+.sidebar-content a[aria-current='page'],
+.sidebar-content a[aria-current='page']:hover,
+.sidebar-content a[aria-current='page']:focus {
+  background: var(--hi);
+  color: var(--hi-ink);
+  border: 2px solid var(--ink);
+  border-radius: 7px;
+  font-weight: 800;
+  box-shadow: 2px 2px 0 var(--shadow-c);
+}
+.sidebar-content summary .group-label .large {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--sl-color-gray-2);
+}
+
+/* headings: Archivo Black has one weight, so never ask for a bolder one */
+.sl-markdown-content :is(h1, h2, h3, h4, h5, h6),
+h1#_top {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-synthesis: none;
+  letter-spacing: -0.01em;
+  color: var(--sl-color-white);
+}
+[lang='zh-CN'] :is(.sl-markdown-content :is(h1, h2, h3, h4), h1#_top) {
+  letter-spacing: 0;
+}
+h1#_top {
+  line-height: 1.08;
+}
+
+/* links: ink with a thick underline; yellow on hover (no yellow text on paper: contrast) */
+.sl-markdown-content a:not(:where(.not-content *)) {
+  color: var(--sl-color-white);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--hi);
+}
+.sl-markdown-content a:not(:where(.not-content *)):hover {
+  background: var(--hi);
+  color: var(--hi-ink);
+  text-decoration-color: var(--hi-ink);
+}
+
+/* tables: 2px ink frame, soft head, mono header labels */
+.sl-markdown-content table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 4px 4px 0 var(--shadow-c);
+  font-size: 0.9rem;
+}
+.sl-markdown-content th {
+  background: var(--soft);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--ink);
+}
+.sl-markdown-content :is(th, td) {
+  border-color: var(--grid);
+  padding-inline: 0.75rem;
+}
+.sl-markdown-content :is(th:first-child, td:first-child):not(:where(.not-content *)) {
+  padding-inline-start: 0.75rem;
+}
+.sl-markdown-content :is(th:last-child, td:last-child):not(:where(.not-content *)) {
+  padding-inline-end: 0.75rem;
+}
+
+/* inline code */
+.sl-markdown-content :not(pre) > code {
+  border: 1.5px solid var(--grid);
+  border-radius: 5px;
+  padding: 0.05em 0.35em;
+  font-size: 0.86em;
+}
+
+/* asides and blockquotes */
+.starlight-aside {
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  box-shadow: 3px 3px 0 var(--shadow-c);
+}
+.sl-markdown-content blockquote {
+  border-inline-start: 4px solid var(--hi);
+}
+
+/* pagination and edit link */
+.pagination-links a {
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  box-shadow: 3px 3px 0 var(--shadow-c);
+  background: var(--card-bg);
+}
+.pagination-links a:hover {
+  background: var(--hi);
+  color: var(--hi-ink);
+}
+.pagination-links a:hover .link-title {
+  color: var(--hi-ink);
+}
+
+/* search button and selects */
+site-search button[data-open-modal] {
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  box-shadow: 2px 2px 0 var(--shadow-c);
+  background: var(--card-bg);
+}
+starlight-theme-select select,
+starlight-lang-select select {
+  font-family: var(--font-mono);
+}
+starlight-lang-select label {
+  --sl-select-width: 8em !important;
+}
+
+/* the "not translated yet" notice */
+.sl-markdown-content ~ * .starlight-aside--caution,
+.starlight-aside--caution {
+  background: color-mix(in srgb, var(--hi) 22%, var(--card-bg));
+}
+
+::selection {
+  background: var(--hi);
+  color: var(--hi-ink);
+}

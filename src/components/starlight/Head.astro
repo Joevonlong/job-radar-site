@@ -1,0 +1,16 @@
+---
+// Starlight <head>: the default, the font preloads the landing pages use, and the social image of the page's language.
+import Default from '@astrojs/starlight/components/Head.astro';
+import FontPreloads from '../FontPreloads.astro';
+import { url } from '../../lib/site';
+
+const zh = Astro.locals.starlightRoute.locale === 'zh';
+const image = new URL(url(zh ? 'og-zh.png' : 'og.png'), Astro.site).href;
+const alt = zh ? 'Job Radar：你的岗位推送，只为你调频。' : 'Job Radar: Your job feed, tuned to you.';
+---
+
+<Default />
+<FontPreloads />
+<meta property="og:image" content={image} />
+<meta property="og:image:alt" content={alt} />
+<meta name="twitter:image" content={image} />

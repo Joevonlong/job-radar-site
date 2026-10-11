@@ -1,0 +1,11 @@
+---
+// Preload the Latin faces used above the fold, so text does not reflow when the web fonts arrive (layout shift).
+// Same source files as the @fontsource CSS, so the bundler emits one hashed copy that both use.
+import archivo500 from '@fontsource/archivo/files/archivo-latin-500-normal.woff2?url';
+import archivo800 from '@fontsource/archivo/files/archivo-latin-800-normal.woff2?url';
+import archivoBlack from '@fontsource/archivo-black/files/archivo-black-latin-400-normal.woff2?url';
+import plexMono500 from '@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2?url';
+const fonts = [archivo500, archivo800, archivoBlack, plexMono500];
+---
+
+{fonts.map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}

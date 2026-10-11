@@ -1,0 +1,14 @@
+# pnpm 11 settings.
+#
+# To keep the package store somewhere specific (for example a shared or offline one), set it per machine, not here:
+# `pnpm install --store-dir <dir>` or the `pnpm_config_store_dir` environment variable (`pnpm store path` shows what
+# is in effect).
+confirmModulesPurge: false
+allowBuilds:
+  esbuild: true
+  sharp: true
+# Host (macOS arm64) plus the GitHub Pages runner (Linux x64), so the store has the native binaries of both.
+supportedArchitectures:
+  os: [current, linux]
+  cpu: [current, x64]
+  libc: [current, glibc]

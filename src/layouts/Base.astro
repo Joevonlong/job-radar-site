@@ -1,0 +1,101 @@
+---
+import '../styles/fonts.css';
+import '../styles/tokens.css';
+import '../styles/site.css';
+import FontPreloads from '../components/FontPreloads.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import PlayerDialog from '../components/PlayerDialog.astro';
+import { COPY, HTML_LANG, OG_LOCALE, type Lang } from '../i18n/ui';
+import { localePath, url } from '../lib/site';
+
+interface Props {
+  lang: Lang;
+  /** page path without language prefix, e.g. "" or "tutorials/" */
+  path: string;
+  title: string;
+  description: string;
+  /** false for pages that exist in one form only (404) */
+  alternates?: boolean;
+  noindex?: boolean;
+}
+
+const { lang, path, title, description, alternates = true, noindex = false } = Astro.props;
+const t = COPY[lang];
+const site = Astro.site ?? new URL('https://example.invalid');
+const abs = (p: string) => new URL(url(p), site).href;
+const canonical = abs(localePath(lang, path));
+const ogImage = abs(lang === 'zh' ? 'og-zh.png' : 'og.png');
+const other: Lang = lang === 'en' ? 'zh' : 'en';
+---
+
+<!doctype html>
+<html lang={HTML_LANG[lang]} data-lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    {
+      alternates && (
+        <>
+          <link rel="alternate" hreflang="en" href={abs(localePath('en', path))} />
+          <link rel="alternate" hreflang="zh-CN" href={abs(localePath('zh', path))} />
+          <link rel="alternate" hreflang="x-default" href={abs(localePath('en', path))} />
+        </>
+      )
+    }
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Job Radar" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    <meta property="og:locale:alternate" content={OG_LOCALE[other]} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="640" />
+    <meta property="og:image:alt" content={lang === 'zh' ? 'Job Radar：你的岗位推送，只为你调频。' : 'Job Radar: Your job feed, tuned to you.'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="icon" href={url('favicon.ico')} sizes="16x16 32x32 48x48" />
+    <link rel="icon" href={url('favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url('apple-touch-icon.png')} />
+    <link rel="manifest" href={url('site.webmanifest')} />
+    <meta name="theme-color" content="#f1f0e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0b0a" media="(prefers-color-scheme: dark)" />
+    <link rel="sitemap" href={url('sitemap-index.xml')} />
+    <FontPreloads />
+    {/* Theme before first paint. Same storage key and values as Starlight, so the choice carries into the docs. */}
+    <script is:inline>
+      (() => {
+        let stored = null;
+        try {
+          stored = localStorage.getItem('starlight-theme');
+        } catch {}
+        const theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        document.documentElement.dataset.theme = theme;
+        // hide the hero logo until its reveal starts (reveal.ts); CSS shows it anyway after 2 s
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('reveal-pending');
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{t.nav.skip}</a>
+    <Header lang={lang} path={path} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer lang={lang} path={path} />
+    <PlayerDialog lang={lang} />
+  </body>
+</html>

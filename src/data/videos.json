@@ -1,0 +1,620 @@
+[
+  {
+    "id": "M-01",
+    "kind": "full",
+    "pillar": "overview",
+    "highlights": ["I1", "C1", "C4", "A1", "B1", "B2", "D1", "F1", "F2", "I3"],
+    "target": "1 min",
+    "title": { "en": "Job Radar in one minute", "zh": "一分钟看懂 Job Radar" },
+    "description": {
+      "en": "Ten job boards and fifty tabs, or one feed tuned to you. The whole idea in a minute and a bit.",
+      "zh": "十个招聘网站、五十个标签页，还是一条只为你调频的推送？一分多钟讲清楚。"
+    },
+    "docs": [],
+    "status": "ready",
+    "media": {
+      "mp4": "media/M-01/M-01.mp4",
+      "webm": "media/M-01/M-01.webm",
+      "poster": "media/M-01/M-01.poster.jpg",
+      "poster_webp": "media/M-01/M-01.poster.webp",
+      "poster_small": "media/M-01/M-01.poster-640.webp",
+      "vtt": { "en": "media/M-01/M-01.en.vtt", "zh": "media/M-01/M-01.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 67.4,
+      "bytes": { "mp4": 11546416, "webm": 13191457 },
+      "manifest_version": 9,
+      "draft": false
+    }
+  },
+  {
+    "id": "M-02",
+    "kind": "full",
+    "pillar": "tutorial",
+    "highlights": ["I3", "I4", "I5", "I6", "E2", "B1", "F1"],
+    "target": "3–5 min",
+    "title": { "en": "From zero to your first match", "zh": "从零到第一个匹配" },
+    "description": {
+      "en": "An empty folder to good jobs on your phone: clone, one compose command, eight short questions, connect your AI, run the first cycle.",
+      "zh": "从一个空文件夹到好岗位推上手机：clone、一条 compose 命令、8 个小问题、接上你的 AI、跑第一轮。"
+    },
+    "chapters": {
+      "en": [
+        "What you need",
+        "Clone and start the stack",
+        "The setup wizard, step by step",
+        "Connect your AI on the host",
+        "The first cycle",
+        "Today, the job page and Telegram",
+        "Ask the doctor"
+      ],
+      "zh": ["需要准备什么", "clone 并启动", "设置向导逐步走", "在本机接上你的 AI", "第一轮", "今日页、详情页和 Telegram", "让 doctor 体检"]
+    },
+    "docs": ["setup", "host-setup", "ai-providers", "telegram"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "M-03",
+    "kind": "full",
+    "pillar": "tutorial",
+    "highlights": ["F1", "F2", "F3", "E2", "E3", "B1", "A3", "D1", "G3", "G1", "C4"],
+    "target": "2–3 min",
+    "title": { "en": "A day with Job Radar", "zh": "和 Job Radar 过一天" },
+    "description": {
+      "en": "Morning push on your phone, a closer look over coffee, a tailored résumé, an application on the board, and a nudge a few days later.",
+      "zh": "早上在手机上过一遍推送，喝咖啡时细看、定制简历、投递，几天后它提醒你跟进。"
+    },
+    "chapters": {
+      "en": [
+        "The morning push",
+        "Sorting on your phone",
+        "Reading a job: score, pay, breakdown",
+        "Tailor your résumé and apply",
+        "The evening cycle",
+        "Reminders"
+      ],
+      "zh": ["早上的推送", "在手机上筛", "看一个岗位：分数、薪资、拆解", "定制简历、投递", "晚上又一轮", "跟进提醒"]
+    },
+    "docs": ["usage", "telegram", "breakdown", "resume-kit"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "M-04",
+    "kind": "full",
+    "pillar": "tutorial",
+    "highlights": ["I5", "B2", "C2", "D2", "A4", "E1", "F3", "H1"],
+    "target": "3 min",
+    "title": { "en": "Make it yours", "zh": "按你的方式定制" },
+    "description": {
+      "en": "How “tuned to you” works: your market, what to look for, filters, scoring rules, signal categories, push settings and weekly suggestions. Every page edits your own plain-text config.",
+      "zh": "“只为你调频”是怎么调的：市场、找什么、过滤、打分标准、信号类别、推送和每周建议。每个页面改的都是你自己的纯文本配置。"
+    },
+    "chapters": {
+      "en": [
+        "Market packs",
+        "What to look for",
+        "Hard filters",
+        "Your scoring rules",
+        "Your own signal categories",
+        "Push and application workflow",
+        "Weekly suggestions"
+      ],
+      "zh": ["市场包", "找什么", "硬过滤", "你的打分标准", "自定义信号类别", "推送和申请流程", "每周建议"]
+    },
+    "docs": ["market-packs", "settings", "signals", "interest-suggestions", "configuration"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "M-05",
+    "kind": "full",
+    "pillar": "tutorial",
+    "highlights": ["I6", "I2", "F3", "I3"],
+    "target": "2 min",
+    "title": { "en": "Self-hosting without the chores", "zh": "自托管，不操心" },
+    "description": {
+      "en": "Upgrades are one script with a dry run first; backups run every night and are checked; restore drills never touch your live data; one broken source never stops a cycle.",
+      "zh": "升级就是一条脚本，先试运行；每晚自动备份并校验；恢复演练不碰正式数据；一个来源坏了也不耽误一轮。"
+    },
+    "chapters": {
+      "en": ["Deploy and upgrade", "Nightly backups", "Restore drills", "The doctor", "Alerts on Telegram"],
+      "zh": ["部署和升级", "每晚备份", "恢复演练", "doctor 体检", "Telegram 告警"]
+    },
+    "docs": ["deploy", "upgrade", "backup-restore", "usage"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-01",
+    "kind": "short",
+    "pillar": "tune",
+    "highlights": ["I4", "I5"],
+    "target": "30 s",
+    "title": { "en": "Setup in 8 steps", "zh": "8 步设置" },
+    "description": {
+      "en": "Eight short questions in your browser. Every answer lands in your own config files.",
+      "zh": "在浏览器里回答 8 个小问题，每个答案都写进你自己的配置文件。"
+    },
+    "docs": ["setup"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-02",
+    "kind": "short",
+    "pillar": "phone",
+    "highlights": ["E2", "B3"],
+    "target": "20 s",
+    "title": { "en": "Your morning radar", "zh": "早上的雷达" },
+    "description": {
+      "en": "Every cycle lands on Today: what came in, what passed, what is worth a look, ranked your way.",
+      "zh": "每一轮都落在今日页：来了多少、过了多少、哪些值得看，按你的标准排好。"
+    },
+    "docs": ["usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-02/V-02.mp4",
+      "webm": "media/V-02/V-02.webm",
+      "poster": "media/V-02/V-02.poster.jpg",
+      "poster_webp": "media/V-02/V-02.poster.webp",
+      "poster_small": "media/V-02/V-02.poster-640.webp",
+      "vtt": { "en": "media/V-02/V-02.en.vtt", "zh": "media/V-02/V-02.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 15.8,
+      "bytes": { "mp4": 2110720, "webm": 2466745 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-03",
+    "kind": "short",
+    "pillar": "read",
+    "highlights": ["A1", "A2", "A3", "A4"],
+    "target": "30 s",
+    "title": { "en": "Salary, surfaced", "zh": "薪资，翻出来" },
+    "description": {
+      "en": "Pay written anywhere in the ad is found, quoted and turned into a yearly figure you can compare. Bonuses and funding rounds don't count.",
+      "zh": "JD 里写了的薪资被找出来、附上原文，换算成能比较的年薪；奖金和融资额不算。"
+    },
+    "docs": ["signals"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-03/V-03.mp4",
+      "webm": "media/V-03/V-03.webm",
+      "poster": "media/V-03/V-03.poster.jpg",
+      "poster_webp": "media/V-03/V-03.poster.webp",
+      "poster_small": "media/V-03/V-03.poster-640.webp",
+      "vtt": { "en": "media/V-03/V-03.en.vtt", "zh": "media/V-03/V-03.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 25.7,
+      "bytes": { "mp4": 3329043, "webm": 4228158 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-04",
+    "kind": "short",
+    "pillar": "tune",
+    "highlights": ["B1", "B2"],
+    "target": "30 s",
+    "title": { "en": "Scored by your rules", "zh": "按你的规则打分" },
+    "description": {
+      "en": "Every job gets a 0–100 score against your profile, with reasons and gaps. Add a dealbreaker and those jobs sink.",
+      "zh": "每个岗位按你的画像打 0–100 分，写明理由和差距；加一条“绝不接受”，那类岗位直接沉底。"
+    },
+    "docs": ["settings"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-04/V-04.mp4",
+      "webm": "media/V-04/V-04.webm",
+      "poster": "media/V-04/V-04.poster.jpg",
+      "poster_webp": "media/V-04/V-04.poster.webp",
+      "poster_small": "media/V-04/V-04.poster-640.webp",
+      "vtt": { "en": "media/V-04/V-04.en.vtt", "zh": "media/V-04/V-04.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 24.3,
+      "bytes": { "mp4": 5480323, "webm": 6994226 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-05",
+    "kind": "short",
+    "pillar": "find",
+    "highlights": ["C1", "C2", "C3", "C5"],
+    "target": "25 s",
+    "title": { "en": "One job, not five", "zh": "一个岗位，不是五个" },
+    "description": {
+      "en": "The same job on three sites shows up once, every link kept. Agencies, closed ads and filtered jobs are marked, not hidden.",
+      "zh": "同一个岗位在三个网站出现只算一条，链接都留着；中介、已关闭、被过滤的岗位都标出来，不藏起来。"
+    },
+    "docs": ["extraction", "usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-05/V-05.mp4",
+      "webm": "media/V-05/V-05.webm",
+      "poster": "media/V-05/V-05.poster.jpg",
+      "poster_webp": "media/V-05/V-05.poster.webp",
+      "poster_small": "media/V-05/V-05.poster-640.webp",
+      "vtt": { "en": "media/V-05/V-05.en.vtt", "zh": "media/V-05/V-05.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 20.7,
+      "bytes": { "mp4": 4570123, "webm": 5442420 },
+      "manifest_version": 3,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-06",
+    "kind": "short",
+    "pillar": "find",
+    "highlights": ["C4"],
+    "target": "20 s",
+    "title": { "en": "Clean input for your AI", "zh": "给 AI 一份干净的 JD" },
+    "description": {
+      "en": "Some ads hide instructions meant for AI readers. They are removed before your AI reads the job, and shown to you.",
+      "zh": "有的 JD 藏着写给 AI 看的指令。AI 读之前先清掉，再标出来给你看。"
+    },
+    "docs": ["ai-traps"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-06/V-06.mp4",
+      "webm": "media/V-06/V-06.webm",
+      "poster": "media/V-06/V-06.poster.jpg",
+      "poster_webp": "media/V-06/V-06.poster.webp",
+      "poster_small": "media/V-06/V-06.poster-640.webp",
+      "vtt": { "en": "media/V-06/V-06.en.vtt", "zh": "media/V-06/V-06.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 17.1,
+      "bytes": { "mp4": 1781502, "webm": 1841647 },
+      "manifest_version": 2,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-07",
+    "kind": "short",
+    "pillar": "read",
+    "highlights": ["D1"],
+    "target": "30 s",
+    "title": { "en": "Job breakdown & skill match", "zh": "岗位拆解和技能对照" },
+    "description": {
+      "en": "A long ad split into tasks, stack, years and languages, each with a quote. Your skills are matched on your machine: what you have, what's missing.",
+      "zh": "一份长 JD 拆成工作内容、技术栈、年限、语言，每项附原文；在你自己的机器上和你的技能对照：会什么、缺什么。"
+    },
+    "docs": ["breakdown"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-07/V-07.mp4",
+      "webm": "media/V-07/V-07.webm",
+      "poster": "media/V-07/V-07.poster.jpg",
+      "poster_webp": "media/V-07/V-07.poster.webp",
+      "poster_small": "media/V-07/V-07.poster-640.webp",
+      "vtt": { "en": "media/V-07/V-07.en.vtt", "zh": "media/V-07/V-07.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 22.3,
+      "bytes": { "mp4": 6058149, "webm": 7112503 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-08",
+    "kind": "short",
+    "pillar": "tune",
+    "highlights": ["D2", "A4"],
+    "target": "20 s",
+    "title": { "en": "Your own signal categories", "zh": "自定义信号类别" },
+    "description": {
+      "en": "Salary, equity and perks are only the start. Add your own categories (up to 12) with keywords, a colour and a weight.",
+      "zh": "薪资、股权、福利只是起点。加你自己的类别（最多 12 类），配上关键词、颜色和权重。"
+    },
+    "docs": ["signals"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-09",
+    "kind": "short",
+    "pillar": "read",
+    "highlights": ["D3"],
+    "target": "12 s",
+    "title": { "en": "Read it in your language", "zh": "用你的语言读" },
+    "description": { "en": "One click translates a long ad. The original is one tab away.", "zh": "长 JD 一键翻译，原文就在旁边一个标签页里。" },
+    "docs": ["languages"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-10",
+    "kind": "short",
+    "pillar": "tune",
+    "highlights": ["E1"],
+    "target": "20 s",
+    "title": { "en": "Filters and saved views", "zh": "组合筛选和保存视图" },
+    "description": {
+      "en": "Mix score, pay, source, city, remote and status. Save the combo and it becomes a tab on Today.",
+      "zh": "分数、薪资、来源、城市、远程、状态随便组合，存起来就成了今日页上的一个标签。"
+    },
+    "docs": ["usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-10/V-10.mp4",
+      "webm": "media/V-10/V-10.webm",
+      "poster": "media/V-10/V-10.poster.jpg",
+      "poster_webp": "media/V-10/V-10.poster.webp",
+      "poster_small": "media/V-10/V-10.poster-640.webp",
+      "vtt": { "en": "media/V-10/V-10.en.vtt", "zh": "media/V-10/V-10.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 13.5,
+      "bytes": { "mp4": 1154486, "webm": 1549753 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-11",
+    "kind": "short",
+    "pillar": "run",
+    "highlights": ["E3"],
+    "target": "15 s",
+    "title": { "en": "Keyboard flow", "zh": "键盘流" },
+    "description": {
+      "en": "j / k to move, s for interested, x to ignore, f to save, ⌘K to jump anywhere. A full screen in seconds.",
+      "zh": "j / k 上下，s 感兴趣，x 忽略，f 收藏，⌘K 跳到任何地方，几秒处理完一屏。"
+    },
+    "docs": ["usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-11/V-11.mp4",
+      "webm": "media/V-11/V-11.webm",
+      "poster": "media/V-11/V-11.poster.jpg",
+      "poster_webp": "media/V-11/V-11.poster.webp",
+      "poster_small": "media/V-11/V-11.poster-640.webp",
+      "vtt": { "en": "media/V-11/V-11.en.vtt", "zh": "media/V-11/V-11.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 12.1,
+      "bytes": { "mp4": 1118072, "webm": 1338014 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-12",
+    "kind": "short",
+    "pillar": "phone",
+    "highlights": ["F1", "F2", "F3"],
+    "target": "30 s",
+    "title": { "en": "Telegram, on your phone", "zh": "推到手机上的 Telegram" },
+    "description": {
+      "en": "After every cycle the good ones land in Telegram. Tap 👍, 🚫 or 📄 and your board follows.",
+      "zh": "每轮处理完，好岗位推到 Telegram。点 👍、🚫 或 📄，看板跟着更新。"
+    },
+    "docs": ["telegram"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-12/V-12.mp4",
+      "webm": "media/V-12/V-12.webm",
+      "poster": "media/V-12/V-12.poster.jpg",
+      "poster_webp": "media/V-12/V-12.poster.webp",
+      "poster_small": "media/V-12/V-12.poster-640.webp",
+      "vtt": { "en": "media/V-12/V-12.en.vtt", "zh": "media/V-12/V-12.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 26,
+      "bytes": { "mp4": 3029033, "webm": 2940448 },
+      "manifest_version": 3,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-13",
+    "kind": "short",
+    "pillar": "phone",
+    "highlights": ["G1", "G2"],
+    "target": "20 s",
+    "title": { "en": "Track applications", "zh": "跟进申请" },
+    "description": {
+      "en": "Drag cards across the board and every move goes on the timeline. Saved jobs stay, even after the ad closes.",
+      "zh": "在看板上拖动卡片，每一步都记进时间线；收藏的岗位就算下线了也留着。"
+    },
+    "docs": ["usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-13/V-13.mp4",
+      "webm": "media/V-13/V-13.webm",
+      "poster": "media/V-13/V-13.poster.jpg",
+      "poster_webp": "media/V-13/V-13.poster.webp",
+      "poster_small": "media/V-13/V-13.poster-640.webp",
+      "vtt": { "en": "media/V-13/V-13.en.vtt", "zh": "media/V-13/V-13.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 16,
+      "bytes": { "mp4": 2518217, "webm": 3068935 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-14",
+    "kind": "short",
+    "pillar": "phone",
+    "highlights": ["G3"],
+    "target": "15 s",
+    "title": { "en": "Tailor your resume", "zh": "定制简历" },
+    "description": {
+      "en": "Export the job as Markdown and get a ready-to-paste /tailor command for resume-kit, a separate tool.",
+      "zh": "把岗位导出成 Markdown，拿到一条能直接粘贴的 resume-kit /tailor 命令（resume-kit 是独立工具）。"
+    },
+    "docs": ["resume-kit"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-15",
+    "kind": "short",
+    "pillar": "read",
+    "highlights": ["H1", "H2"],
+    "target": "25 s",
+    "title": { "en": "It learns what you like", "zh": "越用越懂你" },
+    "description": {
+      "en": "Once a week AI looks at what you liked and skipped and suggests keywords, companies and filters. Nothing changes until you approve.",
+      "zh": "每周 AI 看你标过喜欢和跳过的岗位，建议关键词、公司和过滤词；你点批准才生效。"
+    },
+    "docs": ["interest-suggestions", "insights"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-16",
+    "kind": "short",
+    "pillar": "find",
+    "highlights": ["I1", "I2"],
+    "target": "20 s",
+    "title": { "en": "Many sources, isolated", "zh": "很多来源，一个雷达" },
+    "description": {
+      "en": "Job boards, company career pages, Google Jobs and alert emails in one feed. One source breaks, the rest carry on.",
+      "zh": "招聘网站、公司招聘页、Google Jobs、提醒邮件汇成一条；一个来源坏了，其他照常。"
+    },
+    "docs": ["sources"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-16/V-16.mp4",
+      "webm": "media/V-16/V-16.webm",
+      "poster": "media/V-16/V-16.poster.jpg",
+      "poster_webp": "media/V-16/V-16.poster.webp",
+      "poster_small": "media/V-16/V-16.poster-640.webp",
+      "vtt": { "en": "media/V-16/V-16.en.vtt", "zh": "media/V-16/V-16.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 16.9,
+      "bytes": { "mp4": 1947103, "webm": 1997815 },
+      "manifest_version": 1,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-17",
+    "kind": "short",
+    "pillar": "run",
+    "highlights": ["I3"],
+    "target": "20 s",
+    "title": { "en": "Your AI, your subscription", "zh": "用你已有的 AI" },
+    "description": {
+      "en": "The AI work runs on the claude or codex plan you already pay for, or on an API key with a monthly budget.",
+      "zh": "AI 的活用你已经付费的 claude 或 codex 订阅来跑，也可以用 API key，设好月预算。"
+    },
+    "docs": ["ai-providers", "ai-usage"],
+    "status": "ready",
+    "media": {
+      "mp4": "media/V-17/V-17.mp4",
+      "webm": "media/V-17/V-17.webm",
+      "poster": "media/V-17/V-17.poster.jpg",
+      "poster_webp": "media/V-17/V-17.poster.webp",
+      "poster_small": "media/V-17/V-17.poster-640.webp",
+      "vtt": { "en": "media/V-17/V-17.en.vtt", "zh": "media/V-17/V-17.zh.vtt" }
+    },
+    "meta": {
+      "width": 1920,
+      "height": 1080,
+      "duration_s": 16.4,
+      "bytes": { "mp4": 2279483, "webm": 2509346 },
+      "manifest_version": 2,
+      "draft": false
+    }
+  },
+  {
+    "id": "V-18",
+    "kind": "short",
+    "pillar": "run",
+    "highlights": ["I3", "I6"],
+    "target": "25 s",
+    "title": { "en": "Install and doctor", "zh": "安装和体检" },
+    "description": {
+      "en": "One compose command, one small worker on your machine, and the doctor tells you what to fix.",
+      "zh": "一条 compose 命令，本机一个小 worker，doctor 告诉你还差什么。"
+    },
+    "docs": ["deploy", "host-setup"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-19",
+    "kind": "short",
+    "pillar": "run",
+    "highlights": ["E4"],
+    "target": "12 s",
+    "title": { "en": "Light, dark, phone, two languages", "zh": "浅色、深色、手机、双语" },
+    "description": {
+      "en": "Paper or terminal theme, English or Chinese, and a layout that works on your phone.",
+      "zh": "纸面或终端主题，中文或英文界面，手机上也好用。"
+    },
+    "docs": ["languages"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  },
+  {
+    "id": "V-20",
+    "kind": "short",
+    "pillar": "run",
+    "highlights": ["0.3"],
+    "target": "25 s",
+    "title": { "en": "Works with your AI tools", "zh": "能接入你的 AI 工具" },
+    "description": {
+      "en": "Config is plain YAML with comments, one command checks it, and any job exports to Markdown for your other tools.",
+      "zh": "配置是带注释的纯文本 YAML，一条命令就能校验；任何岗位都能导出成 Markdown 交给别的工具。"
+    },
+    "docs": ["configuration", "sources"],
+    "status": "coming-soon",
+    "media": null,
+    "meta": null
+  }
+]

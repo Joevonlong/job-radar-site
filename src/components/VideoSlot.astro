@@ -1,0 +1,76 @@
+---
+// One video slot, fed by src/data/videos.json (pnpm sync:media).
+//  ready        → poster button. Short clips preview muted on hover; a click plays with sound and captions
+//                 (in the dialog for gallery/pillar cards, in place for the hero and the tutorials).
+//  coming soon  → a designed placeholder with the label, title and length.
+// The box always has the video's aspect ratio, so nothing shifts when a poster or a player loads.
+import { COPY, type Lang } from '../i18n/ui';
+import { duration, url, video, vlabel } from '../lib/site';
+
+interface Props {
+  id: string;
+  lang: Lang;
+  variant?: 'hero' | 'card' | 'pillar' | 'tutorial';
+  eager?: boolean;
+}
+const { id, lang, variant = 'card', eager = false } = Astro.props;
+const v = video(id);
+const t = COPY[lang].video;
+const title = v.title[lang];
+const ratio = v.meta ? `${v.meta.width} / ${v.meta.height}` : '16 / 9';
+const mode = variant === 'hero' || variant === 'tutorial' ? 'inline' : 'dialog';
+const m = v.media;
+const len = duration(v);
+const sizes = variant === 'hero' ? '(min-width: 1024px) 620px, 100vw' : variant === 'tutorial' ? '(min-width: 1024px) 720px, 100vw' : '(min-width: 1024px) 400px, (min-width: 640px) 50vw, 100vw';
+const srcset = m && [m.poster_small && `${url(m.poster_small)} 640w`, m.poster_webp && `${url(m.poster_webp)} 1280w`].filter(Boolean).join(', ');
+const vl = vlabel(id, lang);
+const label = `${t.play} ${vl}: ${title}, ${t.playWith}`;
+---
+
+{
+  m ? (
+    <div class:list={['vslot', `vslot--${variant}`]} style={`aspect-ratio:${ratio}`}>
+      <button
+        type="button"
+        class="vslot__btn"
+        aria-label={label}
+        data-play={mode}
+        data-id={id}
+        data-title={`${vl} · ${title}`}
+        data-mp4={url(m.mp4)}
+        data-webm={m.webm ? url(m.webm) : undefined}
+        data-vtt-en={m.vtt.en ? url(m.vtt.en) : undefined}
+        data-vtt-zh={m.vtt.zh ? url(m.vtt.zh) : undefined}
+        data-poster={m.poster ? url(m.poster) : undefined}
+        data-preview={v.kind === 'short' ? 'hover' : undefined}
+      >
+        {m.poster ? (
+          <picture>
+            {srcset && <source type="image/webp" srcset={srcset} sizes={sizes} />}
+            <img src={url(m.poster)} width={v.meta?.width ?? 1920} height={v.meta?.height ?? 1080} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'high' : undefined} />
+          </picture>
+        ) : (
+          <span class="vslot__blank" />
+        )}
+        <span class="vslot__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor" /></svg>
+        </span>
+        <span class="vslot__meta" aria-hidden="true">
+          {vl} · {len}
+          {(m.vtt.en || m.vtt.zh) && <span class="vslot__cc">CC</span>}
+        </span>
+        {v.preview_label && <span class="vslot__badge" aria-hidden="true">{v.preview_label[lang]}</span>}
+      </button>
+    </div>
+  ) : (
+    <div class:list={['vslot', 'vslot--soon', `vslot--${variant}`]} style={`aspect-ratio:${ratio}`} role="img" aria-label={`${vl} ${title}: ${t.soonLong}`}>
+      <span class="vslot__soon-grid" aria-hidden="true" />
+      <span class="vslot__soon-id" aria-hidden="true">{vl}</span>
+      <span class="vslot__soon-chip" aria-hidden="true">
+        <span class="dot" />
+        {t.soon}
+      </span>
+      <span class="vslot__meta" aria-hidden="true">{v.target}</span>
+    </div>
+  )
+}

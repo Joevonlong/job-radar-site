@@ -1,0 +1,15 @@
+---
+// Nav-bar lockup (brand rule: lockup-h-small-* from 24 to 47 px tall; light on paper, dark on terminal).
+import light from '../assets/brand/lockup-h-small-light.svg?url';
+import dark from '../assets/brand/lockup-h-small-dark.svg?url';
+interface Props {
+  height?: number;
+}
+const { height = 32 } = Astro.props;
+const width = Math.round((height * 282.98) / 64);
+---
+
+<span class="logo" style={`--logo-h:${height}px`}>
+  <img class="logo__light" src={light} width={width} height={height} alt="Job Radar" />
+  <img class="logo__dark" src={dark} width={width} height={height} alt="Job Radar" />
+</span>

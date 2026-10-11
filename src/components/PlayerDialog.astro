@@ -1,0 +1,152 @@
+---
+// The one video player of a page: a <dialog> for gallery and pillar cards, in-place playback for the hero and the
+// tutorials, and the muted hover preview of short clips. Captions: the page language's track is on by default.
+import { COPY, type Lang } from '../i18n/ui';
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = COPY[lang].video;
+---
+
+<dialog class="player" aria-labelledby="player-title" data-lang={lang} data-cap-en="English" data-cap-zh="中文" data-no-video={t.noVideo} data-download={t.download}>
+  <div class="player__frame">
+    <div class="player__bar">
+      <span class="player__dot" aria-hidden="true"></span>
+      <h2 id="player-title" class="player__title"></h2>
+      <button type="button" class="icon-btn player__close" aria-label={t.close} data-close>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"></path></svg>
+      </button>
+    </div>
+    <div class="player__stage"></div>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('dialog.player')!;
+  const stage = dialog.querySelector<HTMLDivElement>('.player__stage')!;
+  const titleEl = dialog.querySelector<HTMLElement>('.player__title')!;
+  const lang = dialog.dataset.lang === 'zh' ? 'zh' : 'en';
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const canHover = matchMedia('(hover: hover) and (pointer: fine)');
+  let opener: HTMLElement | null = null;
+
+  /** <video> for a slot button. `full` = sound, controls and captions; otherwise a muted, looping preview. */
+  function makeVideo(btn: HTMLElement, full: boolean): HTMLVideoElement {
+    const d = btn.dataset;
+    const v = document.createElement('video');
+    v.playsInline = true;
+    v.preload = full ? 'auto' : 'metadata';
+    if (d.poster) v.poster = d.poster;
+    if (full) {
+      v.controls = true;
+      v.setAttribute('aria-label', d.title ?? '');
+    } else {
+      v.muted = true;
+      v.loop = true;
+      v.setAttribute('aria-hidden', 'true');
+      v.tabIndex = -1;
+    }
+    for (const [src, type] of [
+      [d.webm, 'video/webm'],
+      [d.mp4, 'video/mp4'],
+    ] as const) {
+      if (!src) continue;
+      const s = document.createElement('source');
+      s.src = src;
+      s.type = type;
+      v.append(s);
+    }
+    if (full) {
+      // captions in the page language when there is a track for it, else English
+      const pref = lang === 'zh' && d.vttZh ? 'zh' : 'en';
+      for (const code of ['en', 'zh'] as const) {
+        const src = code === 'en' ? d.vttEn : d.vttZh;
+        if (!src) continue;
+        const tr = document.createElement('track');
+        tr.kind = 'captions';
+        tr.src = src;
+        tr.srclang = code === 'zh' ? 'zh-CN' : 'en';
+        tr.label = (code === 'en' ? dialog.dataset.capEn : dialog.dataset.capZh) ?? code;
+        tr.default = code === pref;
+        v.append(tr);
+      }
+      v.addEventListener('loadedmetadata', () => {
+        for (const tt of Array.from(v.textTracks)) tt.mode = tt.language.startsWith(pref) ? 'showing' : 'disabled';
+      });
+      const fallback = document.createElement('a');
+      fallback.href = d.mp4 ?? '#';
+      fallback.textContent = `${dialog.dataset.noVideo} ${dialog.dataset.download}`;
+      v.append(fallback);
+    }
+    return v;
+  }
+
+  function play(v: HTMLVideoElement) {
+    const p = v.play();
+    if (p) p.catch(() => {});
+  }
+
+  // ------------------------------------------------------------- click: play with sound and captions
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('button[data-play]');
+    if (!btn) return;
+    stopPreview(btn);
+    if (btn.dataset.play === 'inline') {
+      const box = btn.parentElement!;
+      const v = makeVideo(btn, true);
+      v.className = 'vslot__video';
+      box.classList.add('is-playing');
+      btn.replaceWith(v);
+      v.focus();
+      play(v);
+      return;
+    }
+    opener = btn;
+    titleEl.textContent = btn.dataset.title ?? '';
+    const v = makeVideo(btn, true);
+    stage.replaceChildren(v);
+    dialog.showModal();
+    play(v);
+  });
+
+  function closeDialog() {
+    const v = stage.querySelector('video');
+    v?.pause();
+    stage.replaceChildren();
+    if (dialog.open) dialog.close();
+  }
+  dialog.addEventListener('close', () => {
+    stage.querySelector('video')?.pause();
+    stage.replaceChildren();
+    opener?.focus();
+  });
+  dialog.querySelector('[data-close]')!.addEventListener('click', closeDialog);
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) closeDialog(); // click on the backdrop
+  });
+
+  // ------------------------------------------------------------- hover: muted preview of short clips
+  const previews = new WeakMap<HTMLElement, HTMLVideoElement>();
+  function startPreview(btn: HTMLElement) {
+    if (!canHover.matches || reduced.matches) return;
+    let v = previews.get(btn);
+    if (!v) {
+      v = makeVideo(btn, false);
+      v.className = 'vslot__preview';
+      previews.set(btn, v);
+      btn.append(v);
+    }
+    btn.classList.add('is-previewing');
+    play(v);
+  }
+  function stopPreview(btn: HTMLElement) {
+    const v = previews.get(btn);
+    btn.classList.remove('is-previewing');
+    if (v) v.pause();
+  }
+  document.querySelectorAll<HTMLButtonElement>('button[data-preview="hover"]').forEach((btn) => {
+    btn.addEventListener('pointerenter', () => startPreview(btn));
+    btn.addEventListener('pointerleave', () => stopPreview(btn));
+  });
+</script>
