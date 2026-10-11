@@ -1,0 +1,635 @@
+<!DOCTYPE html><html lang="zh-CN" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-tqvdnrte"> <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>部署、升级、回滚和 7 天无人值守验收 | Job Radar</title><link rel="canonical" href="https://joevonlong.github.io/job-radar-site/zh/docs/deploy/"/><link rel="alternate" hreflang="en" href="https://joevonlong.github.io/job-radar-site/docs/deploy/"/><link rel="alternate" hreflang="zh-CN" href="https://joevonlong.github.io/job-radar-site/zh/docs/deploy/"/><link rel="alternate" hreflang="x-default" href="https://joevonlong.github.io/job-radar-site/docs/deploy/"/><link rel="sitemap" href="/job-radar-site/sitemap-index.xml"/><link rel="icon" href="/job-radar-site/favicon.ico" sizes="16x16 32x32 48x48"/><link rel="apple-touch-icon" href="/job-radar-site/apple-touch-icon.png"/><link rel="manifest" href="/job-radar-site/site.webmanifest"/><link rel="shortcut icon" href="/job-radar-site/favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v7.3.8"/><meta name="generator" content="Starlight v0.42.6"/><meta property="og:title" content="部署、升级、回滚和 7 天无人值守验收"/><meta property="og:type" content="article"/><meta property="og:url" content="https://joevonlong.github.io/job-radar-site/zh/docs/deploy/"/><meta property="og:locale" content="zh-CN"/><meta property="og:description" content="这份指南把 Job Radar 真正部署到一台主机上，并说明怎么确认它在无人值守地正常运行。与主机相关的步骤（Docker Desktop、电源设置、launchd）按 macOS 写；Linux 或 Windows（WSL2）请看 README…"/><meta property="og:site_name" content="Job Radar"/><meta name="twitter:card" content="summary_large_image"/><meta name="description" content="这份指南把 Job Radar 真正部署到一台主机上，并说明怎么确认它在无人值守地正常运行。与主机相关的步骤（Docker Desktop、电源设置、launchd）按 macOS 写；Linux 或 Windows（WSL2）请看 README…"/><meta name="theme-color" content="#f1f0e8" media="(prefers-color-scheme: light)"/><meta name="theme-color" content="#0b0b0a" media="(prefers-color-scheme: dark)"/><meta property="og:image:width" content="1280"/><meta property="og:image:height" content="640"/> <link rel="preload" href="/job-radar-site/_astro/archivo-latin-500-normal.CGugC8dq.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/job-radar-site/_astro/archivo-latin-800-normal.cB6v3kRN.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/job-radar-site/_astro/archivo-black-latin-400-normal.BTVu2TQR.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="/job-radar-site/_astro/ibm-plex-mono-latin-500-normal.DSY6xOcd.woff2" as="font" type="font/woff2" crossorigin> <meta property="og:image" content="https://joevonlong.github.io/job-radar-site/og-zh.png"> <meta property="og:image:alt" content="Job Radar：你的岗位推送，只为你调频。"> <meta name="twitter:image" content="https://joevonlong.github.io/job-radar-site/og-zh.png"> <script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script> <template id="theme-icons"> <svg aria-hidden="true" class="light astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg> <svg aria-hidden="true" class="dark astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg> <svg aria-hidden="true" class="auto astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg> </template><link rel="stylesheet" href="/job-radar-site/_astro/print.ehPL0gv-.css" media="print"><link rel="stylesheet" href="/job-radar-site/_astro/site.CVx3T7KR.css"><link rel="stylesheet" href="/job-radar-site/_astro/cjk.FTOtLFnf.css"><link rel="stylesheet" href="/job-radar-site/_astro/index.B13TrWPd.css"><script type="module" src="/job-radar-site/_astro/page.cNngjUgL.js"></script></head> <body class="astro-tqvdnrte"> <a class="sl-skip-link astro-ymo6uhe4" href="#_top">跳转到内容</a> <div class="page sl-flex astro-tuvukj6v"> <header class="header astro-tuvukj6v"><div class="header astro-7ivugffu"> <div class="title-wrapper sl-flex astro-7ivugffu"> <a href="/job-radar-site/zh" class="site-title sl-flex astro-cdjyzzki">  <img class="light:sl-hidden print:hidden astro-cdjyzzki" alt="Job Radar" src="/job-radar-site/_astro/lockup-h-small-dark.xJ85k7w7.svg" width="141" height="32">  <img class="dark:sl-hidden print:block astro-cdjyzzki" alt="Job Radar" src="/job-radar-site/_astro/lockup-h-small-light.B3pZhgJM.svg" width="141" height="32">  <span class="sr-only astro-cdjyzzki" translate="no"> Job Radar </span> </a> </div> <div class="sl-flex print:hidden astro-7ivugffu"> <site-search class="astro-7ivugffu astro-xdwclxjm" data-translations="{&quot;placeholder&quot;:&quot;搜索&quot;}"> <button data-open-modal disabled aria-label="搜索" aria-keyshortcuts="Control+K" class="astro-xdwclxjm"> <svg aria-hidden="true" class="astro-xdwclxjm astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg> <span class="sl-hidden md:sl-block astro-xdwclxjm" aria-hidden="true">搜索</span> <kbd class="sl-hidden md:sl-flex astro-xdwclxjm" style="display: none;"> <kbd class="astro-xdwclxjm">Ctrl</kbd><kbd class="astro-xdwclxjm">K</kbd> </kbd> </button> <dialog style="padding:0" aria-label="搜索" class="astro-xdwclxjm"> <div class="dialog-frame sl-flex astro-xdwclxjm">  <button data-close-modal class="sl-flex md:sl-hidden astro-xdwclxjm"> 取消 </button> <div class="search-container astro-xdwclxjm"> <div id="starlight__search" class="astro-xdwclxjm"></div> </div> </div> </dialog> </site-search>  <script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script><script type="module" src="/job-radar-site/_astro/Search.astro_astro_type_script_index_0_lang.8ni-yVee.js"></script> </div> <div class="sl-hidden md:sl-flex print:hidden right-group astro-7ivugffu"> <div class="sl-flex social-icons astro-7ivugffu"> <a class="sl-site-link astro-dsy7zfrk" href="/job-radar-site/zh/">首页</a> <a class="sl-site-link astro-dsy7zfrk" href="/job-radar-site/zh/tutorials/">教程</a>  <a href="https://github.com/Joevonlong/job-radar" rel="me" class="sl-flex astro-hbygohle"> <span class="sr-only astro-hbygohle">GitHub</span> <svg aria-hidden="true" class="astro-hbygohle astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg> </a>  </div> <starlight-theme-select>  <label style="--sl-select-width: 6.25em" class="astro-bgvsvvut"> <span class="sr-only astro-bgvsvvut">选择主题</span> <svg aria-hidden="true" class="icon label-icon astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg> <select autocomplete="off" class="astro-bgvsvvut"> <option value="dark" class="astro-bgvsvvut">深色</option><option value="light" class="astro-bgvsvvut">浅色</option><option value="auto" selected class="astro-bgvsvvut">自动</option> </select> <svg aria-hidden="true" class="icon caret astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label> </starlight-theme-select>  <script>
+	StarlightThemeProvider.updatePickers();
+</script><script type="module">var e=`starlight-theme`,t=e=>e===`auto`||e===`dark`||e===`light`?e:`auto`,n=()=>t(typeof localStorage<`u`&&localStorage.getItem(e));function r(t){typeof localStorage<`u`&&localStorage.setItem(e,t===`light`||t===`dark`?t:``)}var i=()=>matchMedia(`(prefers-color-scheme: light)`).matches?`light`:`dark`;function a(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e===`auto`?i():e,r(e)}matchMedia(`(prefers-color-scheme: light)`).addEventListener(`change`,()=>{n()===`auto`&&a(`auto`)});var o=class extends HTMLElement{constructor(){super(),a(n()),this.querySelector(`select`)?.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&a(t(e.currentTarget.value))})}};customElements.define(`starlight-theme-select`,o);</script> <starlight-lang-select> <label style="--sl-select-width: 7em" class="astro-bgvsvvut"> <span class="sr-only astro-bgvsvvut">选择语言</span> <svg aria-hidden="true" class="icon label-icon astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M8.516 3a.94.94 0 0 0-.941.94v1.15H2.94a.94.94 0 1 0 0 1.882h7.362a7.422 7.422 0 0 1-1.787 3.958 7.42 7.42 0 0 1-1.422-2.425.94.94 0 1 0-1.774.627 9.303 9.303 0 0 0 1.785 3.043 7.422 7.422 0 0 1-4.164 1.278.94.94 0 1 0 0 1.881 9.303 9.303 0 0 0 5.575-1.855 9.303 9.303 0 0 0 4.11 1.74l-.763 1.525a.968.968 0 0 0-.016.034l-1.385 2.77a.94.94 0 1 0 1.683.841l1.133-2.267h5.806l1.134 2.267a.94.94 0 0 0 1.683-.841l-1.385-2.769a.95.95 0 0 0-.018-.036l-3.476-6.951a.94.94 0 0 0-1.682 0l-1.82 3.639a7.423 7.423 0 0 1-3.593-1.256 9.303 9.303 0 0 0 2.27-5.203h1.894a.94.94 0 0 0 0-1.881H9.456V3.94A.94.94 0 0 0 8.516 3Zm6.426 11.794a1.068 1.068 0 0 1-.02.039l-.703 1.407h3.924l-1.962-3.924-1.24 2.478Z" clip-rule="evenodd"/></svg> <select autocomplete="off" class="astro-bgvsvvut"> <option value="/job-radar-site/docs/deploy/" class="astro-bgvsvvut">English</option><option value="/job-radar-site/zh/docs/deploy/" selected class="astro-bgvsvvut">简体中文</option> </select> <svg aria-hidden="true" class="icon caret astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label> </starlight-lang-select><script type="module">var e=class extends HTMLElement{constructor(){super();let e=this.querySelector(`select`);e&&(e.addEventListener(`change`,e=>{e.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=e.currentTarget.value)}),window.addEventListener(`pageshow`,t=>{if(!t.persisted)return;let n=e.querySelector(`option[selected]`)?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}};customElements.define(`starlight-lang-select`,e);</script> </div> </div></header> <nav class="sidebar print:hidden astro-tuvukj6v" aria-label="主要"> <button popovertarget="starlight__sidebar" class="sl-menu-button sl-flex md:sl-hidden print:hidden astro-wrpzxlfi"> <svg aria-hidden="true" class="open-menu astro-wrpzxlfi astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg> <svg aria-hidden="true" class="close-menu astro-wrpzxlfi astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg> <span class="sr-only astro-wrpzxlfi">菜单</span> </button> <script type="module">var e=class extends HTMLElement{constructor(){super();let e=matchMedia(`(min-width: 50em)`),t=()=>{this.popover=e.matches?null:`auto`};t(),e.addEventListener(`change`,()=>t()),this.addEventListener(`toggle`,({newState:e})=>this.trapFocus(e===`open`))}trapFocus(e){document.querySelectorAll(`.main-frame, .sl-skip-link`).forEach(t=>{t.toggleAttribute(`inert`,e)})}};customElements.define(`sl-sidebar-pane`,e);</script><sl-sidebar-pane popover id="starlight__sidebar" class="sidebar-pane astro-tuvukj6v"> <div class="sidebar-content sl-flex astro-tuvukj6v"> <sl-sidebar-state-persist data-hash="1iapvga" class="astro-uj2dt7pa"> <script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script> <ul class="top-level astro-tkscl3gx"> <li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">开始</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="0"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">总览</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/setup/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">首次设置</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/usage/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">日常使用</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/host-setup/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Mac 主机设置</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">按你定制</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="1"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/configuration/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">配置</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/market-packs/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">市场包</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/settings/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">设置页</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/languages/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">语言</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/signals/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">信号类别</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/interest-suggestions/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">每周建议</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/insights/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">统计页</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">AI</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="2"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/ai-providers/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">AI 服务与 ai-worker</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/ai-usage/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">AI 用量和费用</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/breakdown/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">岗位拆解</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/ai-traps/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">AI 陷阱</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/extraction/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">提取规则</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">来源</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="3"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/sources/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">来源清单</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/linkedin-session/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">LinkedIn 登录态</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/gmail-alerts/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Gmail 提醒邮件</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/jsearch/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">JSearch（Google Jobs）</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/tavily/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Tavily（发现招聘页）</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/apify/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Apify（LinkedIn）</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/brightdata/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Bright Data（LinkedIn）</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">手机和简历</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="4"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/telegram/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">Telegram 推送</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/resume-kit/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">resume-kit 联动</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">运维</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="5"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/deploy/" aria-current="page" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">部署和验收</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/upgrade/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">升级和卸载</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/backup-restore/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">备份与恢复</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">参与开发</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="6"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/development/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">开发</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/ci/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">CI 说明</span>  </a> </li> </ul> </details> </li><li class="astro-tkscl3gx"> <details open class="astro-tkscl3gx"> <summary class="astro-tkscl3gx"> <span class="group-label astro-tkscl3gx"> <span class="large astro-tkscl3gx">更多指南</span>  </span> <svg aria-hidden="true" class="caret astro-tkscl3gx astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="7"></sl-sidebar-restore> <ul class="astro-tkscl3gx"> <li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/commercial-use/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">在组织里使用 Job Radar</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/faq/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">常见问题</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/installation/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">安装</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/multiple-instances/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">多个实例</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/privacy/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">隐私：存了什么、什么会离开本机、怎么彻底删除</span>  </a> </li><li class="astro-tkscl3gx"> <a href="/job-radar-site/zh/docs/salary/" class="astro-tkscl3gx"> <span class="astro-tkscl3gx">薪资水平和查薪资</span>  </a> </li> </ul> </details> </li> </ul>  <script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script></sl-sidebar-state-persist> <div class="md:sl-hidden"> <div class="mobile-preferences sl-flex astro-jv5rj5md"> <div class="social-icons astro-jv5rj5md"> <a class="sl-site-link astro-dsy7zfrk" href="/job-radar-site/zh/">首页</a> <a class="sl-site-link astro-dsy7zfrk" href="/job-radar-site/zh/tutorials/">教程</a>  <a href="https://github.com/Joevonlong/job-radar" rel="me" class="sl-flex astro-hbygohle"> <span class="sr-only astro-hbygohle">GitHub</span> <svg aria-hidden="true" class="astro-hbygohle astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg> </a>  </div> <starlight-theme-select>  <label style="--sl-select-width: 6.25em" class="astro-bgvsvvut"> <span class="sr-only astro-bgvsvvut">选择主题</span> <svg aria-hidden="true" class="icon label-icon astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg> <select autocomplete="off" class="astro-bgvsvvut"> <option value="dark" class="astro-bgvsvvut">深色</option><option value="light" class="astro-bgvsvvut">浅色</option><option value="auto" selected class="astro-bgvsvvut">自动</option> </select> <svg aria-hidden="true" class="icon caret astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label> </starlight-theme-select>  <script>
+	StarlightThemeProvider.updatePickers();
+</script> <starlight-lang-select> <label style="--sl-select-width: 7em" class="astro-bgvsvvut"> <span class="sr-only astro-bgvsvvut">选择语言</span> <svg aria-hidden="true" class="icon label-icon astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path fill-rule="evenodd" d="M8.516 3a.94.94 0 0 0-.941.94v1.15H2.94a.94.94 0 1 0 0 1.882h7.362a7.422 7.422 0 0 1-1.787 3.958 7.42 7.42 0 0 1-1.422-2.425.94.94 0 1 0-1.774.627 9.303 9.303 0 0 0 1.785 3.043 7.422 7.422 0 0 1-4.164 1.278.94.94 0 1 0 0 1.881 9.303 9.303 0 0 0 5.575-1.855 9.303 9.303 0 0 0 4.11 1.74l-.763 1.525a.968.968 0 0 0-.016.034l-1.385 2.77a.94.94 0 1 0 1.683.841l1.133-2.267h5.806l1.134 2.267a.94.94 0 0 0 1.683-.841l-1.385-2.769a.95.95 0 0 0-.018-.036l-3.476-6.951a.94.94 0 0 0-1.682 0l-1.82 3.639a7.423 7.423 0 0 1-3.593-1.256 9.303 9.303 0 0 0 2.27-5.203h1.894a.94.94 0 0 0 0-1.881H9.456V3.94A.94.94 0 0 0 8.516 3Zm6.426 11.794a1.068 1.068 0 0 1-.02.039l-.703 1.407h3.924l-1.962-3.924-1.24 2.478Z" clip-rule="evenodd"/></svg> <select autocomplete="off" class="astro-bgvsvvut"> <option value="/job-radar-site/docs/deploy/" class="astro-bgvsvvut">English</option><option value="/job-radar-site/zh/docs/deploy/" selected class="astro-bgvsvvut">简体中文</option> </select> <svg aria-hidden="true" class="icon caret astro-bgvsvvut astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label> </starlight-lang-select> </div> </div> </div> </sl-sidebar-pane> </nav> <div class="main-frame astro-tuvukj6v">  <script type="module">var e=document.getElementById(`starlight__sidebar`),t=e?.querySelector(`sl-sidebar-state-persist`),n=`sl-sidebar-state`,r=()=>{let r=[],i=t?.dataset.hash||``;try{let e=sessionStorage.getItem(n),t=JSON.parse(e||`{}`);Array.isArray(t.open)&&t.hash===i&&(r=t.open)}catch{}return{hash:i,open:r,scroll:e?.scrollTop||0}},i=e=>{try{sessionStorage.setItem(n,JSON.stringify(e))}catch{}},a=()=>i(r()),o=(e,t)=>{let n=r();n.open[t]=e,i(n)};t?.addEventListener(`click`,e=>{if(!(e.target instanceof Element))return;let t=e.target.closest(`summary`)?.closest(`details`);if(!t)return;let n=t.querySelector(`sl-sidebar-restore`),r=parseInt(n?.dataset.index||``);isNaN(r)||o(!t.open,r)}),addEventListener(`visibilitychange`,()=>{document.visibilityState===`hidden`&&a()});</script><div class="lg:sl-flex astro-ab2vbjlc"> <aside class="right-sidebar-container print:hidden astro-ab2vbjlc"> <div class="right-sidebar astro-ab2vbjlc">  <div class="lg:sl-hidden astro-sqeveihj"> <mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-3ni64oc3"> <nav aria-labelledby="starlight__on-this-page--mobile" class="astro-3ni64oc3"> <details id="starlight__mobile-toc" class="astro-3ni64oc3"> <summary id="starlight__on-this-page--mobile" class="sl-flex astro-3ni64oc3"> <span class="toggle sl-flex astro-3ni64oc3"> 本页内容 <svg aria-hidden="true" class="caret astro-3ni64oc3 astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </span> <span class="display-current astro-3ni64oc3"></span> </summary> <div class="dropdown astro-3ni64oc3"> <ul class="isMobile astro-6hehyn6m" style="--depth: 0;"> <li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#_top" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">概述</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#1-第一次部署前的清单--你来做" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">1. 第一次部署前的清单  【你来做】</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#2-部署scriptsopsdeploysh" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">2. 部署：scripts/ops/deploy.sh</span> </a> <ul class="isMobile astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#被重启打断的工作" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">被重启打断的工作</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#只能有一个-ai-worker" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">只能有一个 ai-worker</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#3-日常检查pnpm-run-doctor" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">3. 日常检查：pnpm run doctor</span> </a> <ul class="isMobile astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#每一项检查什么" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">每一项检查什么</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#4-升级" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">4. 升级</span> </a> <ul class="isMobile astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#配置分层之后" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">配置分层之后</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#5-回滚" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">5. 回滚</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#6-7-天无人值守验收" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">6. 7 天无人值守验收</span> </a> <ul class="isMobile astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#开始前" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">开始前</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#每天一次建议晚上-1700-的晚轮和推送都完成之后" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">每天一次（建议晚上 17:00 的晚轮和推送都完成之后）</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#怎么算通过" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">怎么算通过</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#结束时" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">结束时</span> </a>  </li> </ul> </li> </ul> </div> </details> </nav> </mobile-starlight-toc><script type="module" src="/job-radar-site/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.C3fM4Kra.js"></script> </div> <div class="right-sidebar-panel sl-hidden lg:sl-block astro-sqeveihj"> <div class="sl-container astro-sqeveihj"> <starlight-toc data-min-h="2" data-max-h="3"> <nav aria-labelledby="starlight__on-this-page"> <h2 id="starlight__on-this-page">本页内容</h2> <ul class="astro-6hehyn6m" style="--depth: 0;"> <li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#_top" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">概述</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#1-第一次部署前的清单--你来做" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">1. 第一次部署前的清单  【你来做】</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#2-部署scriptsopsdeploysh" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">2. 部署：scripts/ops/deploy.sh</span> </a> <ul class="astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#被重启打断的工作" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">被重启打断的工作</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#只能有一个-ai-worker" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">只能有一个 ai-worker</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#3-日常检查pnpm-run-doctor" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">3. 日常检查：pnpm run doctor</span> </a> <ul class="astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#每一项检查什么" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">每一项检查什么</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#4-升级" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">4. 升级</span> </a> <ul class="astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#配置分层之后" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">配置分层之后</span> </a>  </li> </ul> </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#5-回滚" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">5. 回滚</span> </a>  </li><li style="--depth: 0;" class="astro-6hehyn6m"> <a href="#6-7-天无人值守验收" style="--depth: 0;" class="astro-6hehyn6m"> <span style="--depth: 0;" class="astro-6hehyn6m">6. 7 天无人值守验收</span> </a> <ul class="astro-6hehyn6m" style="--depth: 1;"> <li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#开始前" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">开始前</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#每天一次建议晚上-1700-的晚轮和推送都完成之后" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">每天一次（建议晚上 17:00 的晚轮和推送都完成之后）</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#怎么算通过" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">怎么算通过</span> </a>  </li><li style="--depth: 1;" class="astro-6hehyn6m"> <a href="#结束时" style="--depth: 1;" class="astro-6hehyn6m"> <span style="--depth: 1;" class="astro-6hehyn6m">结束时</span> </a>  </li> </ul> </li> </ul> </nav> </starlight-toc><script type="module" src="/job-radar-site/_astro/TableOfContents.astro_astro_type_script_index_0_lang.BpJaGz7G.js"></script> </div> </div>  </div> </aside> <div class="main-pane astro-ab2vbjlc">  <main data-pagefind-body class="astro-tqvdnrte" lang="zh-CN" dir="ltr">    <div class="content-panel astro-zxhujzrc"> <div class="sl-container astro-zxhujzrc"> <h1 id="_top" class="astro-syucrzyr">部署、升级、回滚和 7 天无人值守验收</h1> </div> </div> <div class="content-panel astro-zxhujzrc"> <div class="sl-container astro-zxhujzrc"> <div class="sl-markdown-content"> <!-- Generated by `pnpm sync:docs` from Joevonlong/job-radar docs/deploy.zh.md at 2947f47c185f. Do not edit: change the product repository and sync again. -->
+<p>这份指南把 Job Radar 真正部署到一台主机上，并说明怎么确认它在无人值守地正常运行。与主机相关的步骤（Docker Desktop、电源设置、launchd）按 macOS 写；Linux 或 Windows（WSL2）请看 <a href="https://github.com/Joevonlong/job-radar/blob/main/README.zh.md#%E5%B9%B3%E5%8F%B0%E8%AF%B4%E6%98%8E">README</a> 的平台说明，并使用与平台无关的部分（部署脚本、doctor、升级和回滚）。</p>
+<ul>
+<li>第一次部署：先做第 1 节的清单，再运行第 2 节的 <code dir="auto">scripts/ops/deploy.sh</code>。</li>
+<li>平时：用第 3 节的 <code dir="auto">pnpm run doctor</code> 看一眼就知道“系统是不是健康、缺什么”。</li>
+<li>升级和回滚：第 4、5 节。</li>
+<li>7 天无人值守验收：第 6 节，记录写在你自己的文件里（例如 <code dir="auto">unattended-&lt;date&gt;.md</code>）。</li>
+</ul>
+<p>约定：标 <strong>【你来做】</strong> 的步骤只有你本人能做（点系统弹窗、输入密码、登录账号、填令牌）；agent 不能也不应该代劳。令牌和密码只写进 <code dir="auto">.env</code> 或各自的登录界面，不要贴进聊天、不要提交到 git。命令默认在项目目录（包含 <code dir="auto">package.json</code>、<code dir="auto">compose.yaml</code>、<code dir="auto">config/</code>、<code dir="auto">data/</code> 的那个目录）下执行。</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="1-第一次部署前的清单--你来做">1. 第一次部署前的清单  <strong>【你来做】</strong></h2><a class="sl-anchor-link" href="#1-第一次部署前的清单--你来做"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “1. 第一次部署前的清单  【你来做】”</span></a></div>
+<p>每一项做完打勾。细节都在 <a href="../host-setup/">host-setup.zh.md</a>，这里只列顺序和“怎么确认做对了”。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>要做的事</th>
+<th>细节</th>
+<th>怎么确认</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>☐ 1</td>
+<td>如果项目放在外接卷上：外接卷挂载正确（没有 <code dir="auto">Data 1</code> 这类重复挂载）；Docker Desktop 能读写外接卷</td>
+<td>host-setup 第 0、1 节</td>
+<td><code dir="auto">ls /Volumes</code> 里该卷只出现一次；deploy 脚本第一步会检查</td>
+</tr>
+<tr>
+<td>☐ 2</td>
+<td>Docker Desktop 登录时自动启动；Mac 开机后自动登录</td>
+<td>host-setup 第 2 节</td>
+<td>重启 Mac 后不用点任何东西，<code dir="auto">docker info</code> 能返回</td>
+</tr>
+<tr>
+<td>☐ 3</td>
+<td>断电后自动开机、不休眠：<code dir="auto">sudo pmset autorestart 1</code>、<code dir="auto">sudo pmset -a sleep 0</code></td>
+<td>host-setup 第 3 节</td>
+<td>doctor 的「Mac 断电自启、不休眠」是 ✅</td>
+</tr>
+<tr>
+<td>☐ 4</td>
+<td>claude 和（或）codex 在宿主机上登录，或在 <code dir="auto">.env</code> 里设置了 API key</td>
+<td>host-setup 第 6 节</td>
+<td>终端里 <code dir="auto">claude auth status</code> 显示 <code dir="auto">loggedIn: true</code>，<code dir="auto">codex login status</code> 显示 Logged in</td>
+</tr>
+<tr>
+<td>☐ 5</td>
+<td>Telegram：@BotFather 建 bot，token 和 chat id 写进 <code dir="auto">.env</code>；<code dir="auto">notify.yaml</code> 里 <code dir="auto">telegram.enabled: true</code></td>
+<td><a href="../telegram/">telegram.zh.md</a>、host-setup 第 6 节</td>
+<td><code dir="auto">pnpm telegram:test</code> 手机收到测试消息</td>
+</tr>
+<tr>
+<td>☐ 6</td>
+<td>采集通道的 key（Bright Data、Apify、Tavily、JSearch、Gmail……）按需写进 <code dir="auto">.env</code>，并确认各通道月预算</td>
+<td>各通道的指南（<a href="../brightdata/">brightdata.zh.md</a>、<a href="../apify/">apify.zh.md</a> 等）；<code dir="auto">.env.example</code> 有变量名</td>
+<td>doctor 的「采集通道与预算」里没有「缺 XXX」</td>
+</tr>
+<tr>
+<td>☐ 7</td>
+<td>画像：<code dir="auto">data/profile/me.yaml</code>、<code dir="auto">preferences.yaml</code> 写好；配置：<code dir="auto">pnpm config:init</code> 生成用户配置目录 <code dir="auto">data/config/</code>（之后改配置都改这里，见 <a href="../configuration/">configuration.zh.md</a>）</td>
+<td><code dir="auto">config/profile.example/</code></td>
+<td><code dir="auto">pnpm config:check</code> 全部通过</td>
+</tr>
+<tr>
+<td>☐ 8</td>
+<td>Tailscale：Mac 上打开并 Connect、勾选 Start at login；手机装同一账号；<code dir="auto">tailscale serve --bg 3000</code>；把 <code dir="auto">tailscale serve status</code> 里的地址写进 <code dir="auto">notify.yaml: public_base_url</code></td>
+<td>host-setup 第 7 节</td>
+<td>手机浏览器能打开那个地址；doctor 的「手机访问」三项都是 ✅</td>
+</tr>
+<tr>
+<td>☐ 9</td>
+<td>LinkedIn 登录态（可选，<code dir="auto">linkedin-session</code> 通道上线后）</td>
+<td><a href="../linkedin-session/">linkedin-session.zh.md</a></td>
+<td>doctor 的「LinkedIn 级联可用，登录态」没有 ⚠️</td>
+</tr>
+<tr>
+<td>☐ 10</td>
+<td><code dir="auto">cp .env.example .env</code>（只在第一次），按 4、5、6 填值</td>
+<td><code dir="auto">.env.example</code></td>
+<td><code dir="auto">.env</code> 已在 <code dir="auto">.gitignore</code>，<code dir="auto">git status</code> 看不到它</td>
+</tr>
+</tbody>
+</table>
+<p>不要用 <code dir="auto">tailscale funnel</code>（会把页面暴露到公网）。永远不要执行 <code dir="auto">docker compose down -v</code>（会删除数据库卷）。</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="2-部署scriptsopsdeploysh">2. 部署：<code dir="auto">scripts/ops/deploy.sh</code></h2><a class="sl-anchor-link" href="#2-部署scriptsopsdeploysh"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “2. 部署：scripts/ops/deploy.sh”</span></a></div>
+<p>先看它要做什么（只打印，不改动任何东西）：</p>
+<div class="expressive-code"><link rel="stylesheet" href="/job-radar-site/_astro/ec.pv3oq.css"><script type="module" src="/job-radar-site/_astro/ec.0vx5m.js"></script><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--dry-run</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="scripts/ops/deploy.sh --dry-run"><div></div></button></div></figure></div>
+<p>输出是 11 个步骤和每一步要执行的命令；如果有条件现在不满足（比如不在 main 分支、有未提交的改动），会用 <code dir="auto">⚠ 实际运行会在这里停下</code> 标出来。确认没问题后：</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="scripts/ops/deploy.sh"><div></div></button></div></figure></div>
+<p>在<strong>主 checkout</strong> 里运行（不要在 worktree 或 feature 分支里；不带 <code dir="auto">--ref</code> 时跟随 <code dir="auto">main</code>，带 <code dir="auto">--ref &lt;tag&gt;</code> 时检出该 tag 并停在 detached HEAD；ai-worker 也是从主 checkout 启动的）。脚本按顺序做，<strong>任何一步失败就停下</strong>，并告诉你是第几步、为什么、怎么办；已完成的步骤不会回滚，修好后重新运行即可（每一步都是幂等的）：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>做什么</th>
+<th>失败时通常是</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 preflight</td>
+<td>git / docker / node / pnpm 都在，Docker 在运行，外接卷没有重复挂载</td>
+<td>Docker Desktop 没起来</td>
+</tr>
+<tr>
+<td>2 pull</td>
+<td>没有未提交的改动。不带 <code dir="auto">--ref</code>：当前在 main，<code dir="auto">git fetch</code> 后快进到 <code dir="auto">origin/main</code>。带 <code dir="auto">--ref &lt;tag&gt;</code>：fetch 后检出该 tag（或分支）</td>
+<td>在别的分支（不带 <code dir="auto">--ref</code> 时）；本地有没推送的提交（分叉）</td>
+</tr>
+<tr>
+<td>3 install</td>
+<td><code dir="auto">pnpm install --frozen-lockfile</code></td>
+<td>网络</td>
+</tr>
+<tr>
+<td>4 config</td>
+<td>建 <code dir="auto">data/config</code>、<code dir="auto">data/profile</code>、<code dir="auto">data/backups</code>、<code dir="auto">data/exports</code>；<code dir="auto">pnpm config:init</code>（把用户配置目录 <code dir="auto">data/config</code> 缺的文件从默认配置 <code dir="auto">config/</code> 复制过去，从不覆盖；第一次部署时用户目录是空的，于是整份复制）；<code dir="auto">pnpm config:migrate --write</code>（<code dir="auto">config_version</code> 升级，原文件备份到 <code dir="auto">data/config/.backup/&lt;时间&gt;/</code>）；<code dir="auto">pnpm config:check</code>（两层都查，并写出每份配置读的是哪一层）；检查 <code dir="auto">.env</code>；<code dir="auto">docker compose config</code></td>
+<td>YAML 写错了（报错会指出文件和字段）；某个文件的 <code dir="auto">config_version</code> 比代码新（代码回退了）</td>
+</tr>
+<tr>
+<td>5 backup</td>
+<td>db 已经在运行就先做一份 <code dir="auto">pre-deploy</code> 备份（第一次部署跳过）</td>
+<td>备份失败时不继续升级</td>
+</tr>
+<tr>
+<td>6 build</td>
+<td><code dir="auto">docker compose -p job-radar build</code></td>
+<td>磁盘满</td>
+</tr>
+<tr>
+<td>7 up</td>
+<td>先 <code dir="auto">pnpm ops:drain</code>：有轮次正在运行就等它结束（最长 <code dir="auto">schedule.yaml: deploy.drain_timeout_seconds</code>，900 秒），因为重建 runner 会打断它。然后 <code dir="auto">docker compose up -d --wait</code>：db / web / runner / jobspy 都要变成 healthy（最长 300 秒）</td>
+<td>某个服务起不来：脚本会列出 <code dir="auto">docker compose ps</code> 和看日志的命令。等完了轮次还在跑只打印警告（<code dir="auto">pnpm ops:drain</code> 退出码 1），没能检查（退出码 3：配置或数据库出错，或某个查询卡住）也只打印警告：部署继续，runner 启动时的补跑会重跑那个定时时段</td>
+</tr>
+<tr>
+<td>8 prune</td>
+<td>清理 Docker：构建缓存按最近使用只留 <code dir="auto">schedule.yaml: deploy.build_cache_keep_gb</code>（<code dir="auto">docker builder prune -f --max-used-space 5gb</code>），删悬空镜像（<code dir="auto">docker image prune -f</code>，不带 <code dir="auto">-a</code>）。从不碰数据卷，不删正在使用的镜像</td>
+<td>不会让部署失败：命令出错只打印 ⚠ 继续（比如 Docker 太旧不认 <code dir="auto">--max-used-space</code>）</td>
+</tr>
+<tr>
+<td>9 migrate</td>
+<td><code dir="auto">pnpm migrate:run</code>（runner 启动时也会自动迁移，这里是确认；已是最新则什么都不做）。有待执行的迁移时先做一份 <code dir="auto">premigrate</code> 备份（数据库加配置压缩包），备份失败就不迁移（<code dir="auto">schedule.yaml</code> 的 <code dir="auto">backup.pre_migrate</code>）</td>
+<td>迁移 SQL 有问题；迁移前备份失败</td>
+</tr>
+<tr>
+<td>10 ai-worker</td>
+<td><code dir="auto">scripts/ops/install-ai-worker.sh</code>：安装或重启 ai-worker：macOS 上是 launchd agent，Linux 上是 systemd 用户单元 <code dir="auto">job-radar-ai-worker.service</code>（macOS 上也会替换还装在旧标签 <code dir="auto">de.jobradar.ai-worker</code> 下的 agent，见 host-setup）。它正在处理的 AI 请求（比如给一整轮打分的 <code dir="auto">run_ai</code>）不会丢：回到队列，重启后接着跑（见下面“被重启打断的工作”）</td>
+<td><code dir="auto">claude</code> / <code dir="auto">codex</code> 不在 PATH 里</td>
+</tr>
+<tr>
+<td>11 doctor</td>
+<td>等 20 秒让心跳到位，再运行 <code dir="auto">pnpm run doctor</code></td>
+<td>见下</td>
+</tr>
+</tbody>
+</table>
+<p>选项：<code dir="auto">--skip-pull</code>（不动 git，按当前代码部署，回滚用）、<code dir="auto">--ref &lt;标签|分支&gt;</code>（部署 <code dir="auto">v2.0.0</code> 这样的发布标签而不是 <code dir="auto">main</code>，见 <a href="../upgrade/">upgrade.zh.md</a>）、<code dir="auto">--no-backup</code>、<code dir="auto">--no-prune</code>（跳过第 8 步的清理）、<code dir="auto">--no-ai-worker</code>、<code dir="auto">--no-drain</code>（第 7 步不等正在运行的轮次）、<code dir="auto">--drain-timeout 秒</code>（代替 <code dir="auto">deploy.drain_timeout_seconds</code>）、<code dir="auto">--branch</code>、<code dir="auto">--remote</code>、<code dir="auto">--wait-timeout 秒</code>、<code dir="auto">--settle 秒</code>；<code dir="auto">--help</code> 看全部。</p>
+<p>第 7、8 步的设置在 <code dir="auto">schedule.yaml</code> 的 <code dir="auto">deploy</code> 块（只有部署脚本读它，改完下次部署生效）。部署脚本和备份脚本读 <code dir="auto">schedule.yaml</code> 时和代码一样：先读用户配置 <code dir="auto">data/config/schedule.yaml</code>，没有才读默认的 <code dir="auto">config/schedule.yaml</code>：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>默认</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">deploy.prune_build_cache</code></td>
+<td>true</td>
+<td>部署后清理 Docker 构建缓存</td>
+</tr>
+<tr>
+<td><code dir="auto">deploy.build_cache_keep_gb</code></td>
+<td>5</td>
+<td>按最近使用保留这么多 GB 的构建缓存，下次构建仍然快；0 = 清掉全部未使用的构建缓存</td>
+</tr>
+<tr>
+<td><code dir="auto">deploy.prune_dangling_images</code></td>
+<td>true</td>
+<td>删除悬空镜像（旧构建留下的、没有标签的镜像）</td>
+</tr>
+<tr>
+<td><code dir="auto">deploy.drain_timeout_seconds</code></td>
+<td>900</td>
+<td>第 7 步重建容器前，最多等这么多秒让正在运行的轮次结束；0 = 不等</td>
+</tr>
+<tr>
+<td><code dir="auto">deploy.drain_poll_seconds</code></td>
+<td>10</td>
+<td>第 7 步等待时多久看一次</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="被重启打断的工作">被重启打断的工作</h3><a class="sl-anchor-link" href="#被重启打断的工作"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “被重启打断的工作”</span></a></div>
+<p>部署（或者崩溃、<code dir="auto">launchctl kickstart</code>）可能在 runner 或 ai-worker 干活时重启它们。不会有工作被悄悄丢掉：</p>
+<ul>
+<li><strong>控制请求</strong>（<code dir="auto">run_ai</code>、打分、翻译、重打分、兴趣建议）：被重启打断的请求回到队列（pending），进程起来后重新执行。打分和推送从断开的地方接着做：已有分数的岗位不会再打分，已推送的岗位不会再推送。同一个请求被打断超过 <code dir="auto">ai.yaml: host_worker.requeue_interrupted_max</code> 次（3）就改为失败，免得一个会把进程搞崩的请求无限循环；设为 0 恢复旧行为（立刻失败）。runner 也用这个值。有两类请求不重新排队而是直接失败，还需要的话再点一次：“测试”按钮，和手动“立即采集”（下面的补跑已经会重跑采集，再排一个只会采两遍）。</li>
+<li><strong>轮次</strong>：正在运行的轮次没法从中间接着跑，所以第 7 步先等它（见上）。如果还是被打断了（等待超时、<code dir="auto">--no-drain</code>、崩溃），这一轮记为失败；runner 启动时的补跑不把它算作“已经跑过”，它所属的定时时段会马上重跑。只重跑一次：如果重跑的这一轮又被打断（比如一轮本身会把 runner 搞崩），它就算“跑过”，崩溃不会变成反复的全量采集。</li>
+</ul>
+<div class="sl-heading-wrapper level-h3"><h3 id="只能有一个-ai-worker">只能有一个 ai-worker</h3><a class="sl-anchor-link" href="#只能有一个-ai-worker"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “只能有一个 ai-worker”</span></a></div>
+<p>ai-worker 运行期间一直持有一个 Postgres 会话级 advisory lock；第二个会以退出码 3 退出（不带 <code dir="auto">--once</code> 时先等 <code dir="auto">ai.yaml: host_worker.already_running_wait_seconds</code>，60 秒），所以同一个请求不会跑两次。两个局限：</p>
+<ul>
+<li>这把锁需要真正的会话。如果 <code dir="auto">DATABASE_URL</code> 经过事务模式的连接池（例如 PgBouncer <code dir="auto">pool_mode = transaction</code>），锁就不跟 worker 的连接绑定，起不到保护作用：让 ai-worker 直连 Postgres，或者用会话模式的池。compose 的配置是直连。</li>
+<li>数据库重启时所有锁都没了。worker 在下一次心跳（<code dir="auto">host_worker.heartbeat_seconds</code>）时重新拿锁；如果恰好在这个空档里启动了第二个 worker，锁归它，它会把第一个正在执行的请求放回队列（于是可能跑两次），第一个在下一次心跳时退出。只有在数据库重启期间手动再起一个 worker 才会碰到。</li>
+</ul>
+<p>第 10 步装的 ai-worker 的日志位置：</p>
+<ul>
+<li><strong>限制</strong>：launchd 自己打不开外接卷上的文件。plist 的 <code dir="auto">StandardOutPath</code> / <code dir="auto">StandardErrorPath</code> 指向外接卷时，任务根本起不来（<code dir="auto">launchctl print</code> 显示 <code dir="auto">last exit code = 78: EX_CONFIG</code>；用 <code dir="auto">/bin/sh</code> 和 node 都一样，在 macOS 上实测）。<code dir="auto">WorkingDirectory</code> 和程序文件在外接卷上没问题，launchd 启动的 node 进程也能往外接卷写文件。所以<strong>不要</strong>把 plist 的这两个路径改到外接卷上。</li>
+<li>ai-worker 自己把输出写到 <code dir="auto">data/logs/ai-worker.out.log</code> / <code dir="auto">ai-worker.err.log</code>（项目所在的卷），超过 <code dir="auto">ai.yaml: host_worker.log_max_mb</code>（10 MB）复制后截断，留 <code dir="auto">log_keep</code>（3）份 <code dir="auto">.1</code>…<code dir="auto">.3</code>。</li>
+<li>launchd 的输出文件留在内置盘：<code dir="auto">~/Library/Logs/job-radar/ai-worker.launchd.log</code>，只接住 worker 打开自己的日志之前的输出和崩溃；同样按大小轮转，轮转出来的旧副本放到 <code dir="auto">data/logs/</code>，内置盘上始终只有这一个小文件。</li>
+<li>更早版本安装的 ai-worker 还把日志写在 <code dir="auto">~/Library/Logs/job-radar/ai-worker.{out,err}.log</code>（doctor 的 <code dir="auto">aiworker.launchd</code> 会 ⚠️ 提示）：重新运行 <code dir="auto">scripts/ops/install-ai-worker.sh</code>（或 <code dir="auto">scripts/ops/deploy.sh</code>），旧日志会一次性搬到 <code dir="auto">data/logs/ai-worker.{out,err}.before-upgrade.log</code>。</li>
+</ul>
+<p>退出码：<code dir="auto">0</code> 部署完成且 doctor 没有问题（或只有 ⚠️）；<code dir="auto">1</code> 某一步失败；<code dir="auto">2</code> 部署完成，但 doctor 报告了 ❌（按它的「怎么办」处理，处理完再运行 <code dir="auto">pnpm run doctor</code>）。</p>
+<p>第一次部署时 doctor 出现 ⚠️ 或 ❌ 很正常（比如 Tailscale 没连、付费渠道没填 key；Telegram 没开时 doctor 只当它是可选项）：按第 1 节的清单补齐，直到 <code dir="auto">pnpm run doctor</code> 全是 ✅。然后做一次重启验证（host-setup 第 5 节：退出再打开 Docker Desktop，一两分钟内四个服务回到 healthy），最好再重启一次 Mac，确认不用任何人干预整套系统都回来。</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="3-日常检查pnpm-run-doctor">3. 日常检查：<code dir="auto">pnpm run doctor</code></h2><a class="sl-anchor-link" href="#3-日常检查pnpm-run-doctor"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “3. 日常检查：pnpm run doctor”</span></a></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">pnpm</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">run</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">doctor</span><span style="--0:#D6DEEB;--1:#403F53">              </span><span style="--0:#919F9F;--1:#5F636F"># 逐项检查，✅ / ⚠️ / ❌，每个 ⚠️ 和 ❌ 下面有「怎么办」</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">pnpm</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">run</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">doctor</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--json</span><span style="--0:#D6DEEB;--1:#403F53">       </span><span style="--0:#919F9F;--1:#5F636F"># 同样的内容，JSON，给脚本用</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">pnpm</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">run</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">doctor</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--only</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">compose</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--only</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">tailscale</span><span style="--0:#D6DEEB;--1:#403F53">   </span><span style="--0:#919F9F;--1:#5F636F"># 只跑 id 以这些前缀开头的检查</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">pnpm</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">run</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">doctor</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--lang</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zh</span><span style="--0:#D6DEEB;--1:#403F53">    </span><span style="--0:#919F9F;--1:#5F636F"># 用另一种语言输出报告（默认：language.yaml 的 cli.locale，见 languages.zh.md）</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="pnpm run doctor              # 逐项检查，✅ / ⚠️ / ❌，每个 ⚠️ 和 ❌ 下面有「怎么办」pnpm run doctor --json       # 同样的内容，JSON，给脚本用pnpm run doctor --only compose --only tailscale   # 只跑 id 以这些前缀开头的检查pnpm run doctor --lang zh    # 用另一种语言输出报告（默认：language.yaml 的 cli.locale，见 languages.zh.md）"><div></div></button></div></figure></div>
+<p>注意写 <code dir="auto">pnpm run doctor</code>：<code dir="auto">pnpm doctor</code> 是 pnpm 自带的命令（检查 pnpm 自己的安装），不会运行这个脚本。</p>
+<p><strong>只读</strong>：不发 Telegram 消息、不调用任何 AI、不花钱、不改任何东西；claude / codex 只查登录状态（<code dir="auto">claude auth status</code>、<code dir="auto">codex login status</code>），Telegram 只检查 token 和 chat id 是否配置且格式正确。</p>
+<p>退出码反映最差的一项：<code dir="auto">0</code> 全部 ✅，<code dir="auto">1</code> 有 ⚠️，<code dir="auto">2</code> 有 ❌，<code dir="auto">3</code> doctor 自己没能运行（参数错误、配置读不了）。每一项的 <code dir="auto">id</code> 稳定，<code dir="auto">--json</code> 里能按 id 取。</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="每一项检查什么">每一项检查什么</h3><a class="sl-anchor-link" href="#每一项检查什么"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “每一项检查什么”</span></a></div>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>检查</th>
+<th>❌ / ⚠️ 的意思和第一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">docker.daemon</code></td>
+<td>Docker 在运行</td>
+<td>❌ Docker Desktop 没起来：<code dir="auto">open -a Docker</code></td>
+</tr>
+<tr>
+<td><code dir="auto">compose.db</code> <code dir="auto">compose.web</code> <code dir="auto">compose.runner</code> <code dir="auto">compose.jobspy</code></td>
+<td>compose 项目 <code dir="auto">job-radar</code> 的四个服务在运行且 healthy；端口只绑在 127.0.0.1</td>
+<td>❌ 容器停了或 unhealthy：看日志命令（<code dir="auto">docker compose -p job-radar logs --tail 100 &lt;服务&gt;</code>）；端口绑到了 0.0.0.0 也是 ❌（违反只绑本机的规则），除非 <code dir="auto">JOB_RADAR_WEB_BIND</code> 有意开放 web <strong>并且</strong>设了网页口令（没设口令：❌，提示先设口令）。web 发布到了回环以外、<code dir="auto">JOB_RADAR_WEB_BIND</code> 却没设或是回环地址，也是 ❌：本机免登录仍然开着，要把 <code dir="auto">JOB_RADAR_WEB_BIND</code> 设成发布的地址。⚠️：服务在宿主机上以进程方式运行（UAT 或 <code dir="auto">pnpm runner</code>），不是 compose 容器——能用，但重启后不会自己回来</td>
+</tr>
+<tr>
+<td><code dir="auto">compose.project</code></td>
+<td>compose 项目的容器是从这份检出启动的（<code dir="auto">com.docker.compose.project.working_dir</code>）</td>
+<td>⚠️ 另一份检出用同一个项目名运行着容器：两者会接管彼此的容器并共用数据库卷。给第二个实例起自己的名字，见 <a href="../multiple-instances/">multiple-instances.zh.md</a></td>
+</tr>
+<tr>
+<td><code dir="auto">web.http</code></td>
+<td>宿主机访问 <code dir="auto">doctor.web_url</code> 的 <code dir="auto">/api/health</code> 返回 200，数据库 ok</td>
+<td>❌ web 没起来或连不上数据库</td>
+</tr>
+<tr>
+<td><code dir="auto">db.connect</code></td>
+<td>宿主机能连上数据库（<code dir="auto">DATABASE_URL</code>，没设就按 <code dir="auto">.env</code> 里的 <code dir="auto">POSTGRES_*</code> 和 <code dir="auto">DB_HOST_PORT</code> 拼）</td>
+<td>❌ db 没起来，或 <code dir="auto">.env</code> 里的口令不对</td>
+</tr>
+<tr>
+<td><code dir="auto">db.migrations</code></td>
+<td>数据库迁移是最新的（对照 <code dir="auto">drizzle/meta/_journal.json</code>）</td>
+<td>❌ 缺迁移：<code dir="auto">scripts/ops/deploy.sh</code> 或 <code dir="auto">pnpm db:migrate</code>；⚠️ 数据库比代码新：是不是回滚了代码（见第 5 节）</td>
+</tr>
+<tr>
+<td><code dir="auto">runner.heartbeat</code></td>
+<td>runner 最新心跳在 <code dir="auto">RUNNER_HEALTH_MAX_AGE_SECONDS</code>（默认 120 秒）内</td>
+<td>❌ runner 卡住或停了：看日志后 <code dir="auto">docker compose restart runner</code></td>
+</tr>
+<tr>
+<td><code dir="auto">aiworker.launchd</code></td>
+<td>launchd 里装了 <code dir="auto">io.jobradar.ai-worker</code> 且状态是 running（Linux 上：systemd 用户单元 <code dir="auto">job-radar-ai-worker.service</code> 处于 active，用 <code dir="auto">systemctl --user show</code> 读取）</td>
+<td>⚠️ 只有旧标签 <code dir="auto">de.jobradar.ai-worker</code> 在运行：运行 <code dir="auto">scripts/ops/install-ai-worker.sh</code> 迁移；❌ 没装或没在运行：先看 <code dir="auto">~/Library/Logs/job-radar/ai-worker.launchd.log</code>（启动失败和崩溃），再 <code dir="auto">scripts/ops/install-ai-worker.sh</code>；⚠️ 没装 launchd 但有心跳（手动启动的）；⚠️ 在运行但日志还写在内置盘的旧位置（旧版本装的）：重新运行 <code dir="auto">scripts/ops/install-ai-worker.sh</code></td>
+</tr>
+<tr>
+<td><code dir="auto">aiworker.heartbeat</code></td>
+<td>ai-worker 心跳在 <code dir="auto">ai.yaml: host_worker.offline_after_seconds</code> 内</td>
+<td>❌ 离线：<code dir="auto">data/logs/ai-worker.err.log</code>，崩溃看 <code dir="auto">~/Library/Logs/job-radar/ai-worker.launchd.log</code></td>
+</tr>
+<tr>
+<td><code dir="auto">ai.claude</code> <code dir="auto">ai.codex</code></td>
+<td>两个订阅 CLI 已登录</td>
+<td>⚠️ 一个没登录（另一个还能用）；❌ 两个都没登录，AI 打分和翻译会停：<code dir="auto">claude</code> 里 <code dir="auto">/login</code>、<code dir="auto">codex login</code></td>
+</tr>
+<tr>
+<td><code dir="auto">telegram.credentials</code> <code dir="auto">telegram.enabled</code></td>
+<td><code dir="auto">.env</code> 里 token 和 chat id 已配置；<code dir="auto">notify.yaml: telegram.enabled</code> 是 true</td>
+<td>Telegram 关着且没配：显示为可选（✅）；⚠️ 已填凭据但开关没开；❌ 开关开了但凭据没配，不会推送</td>
+</tr>
+<tr>
+<td><code dir="auto">network.public_url</code></td>
+<td><code dir="auto">notify.yaml: public_base_url</code> 已设置，且从本机能访问</td>
+<td>⚠️ 没设置（消息里没有“打开详情”链接）；❌ 设置了但访问不了（手机上也会打不开）</td>
+</tr>
+<tr>
+<td><code dir="auto">tailscale.status</code> <code dir="auto">tailscale.serve</code></td>
+<td>Tailscale 在运行；<code dir="auto">tailscale serve</code> 把 web 端口暴露给 tailnet；Funnel 是关的</td>
+<td>⚠️ 没连接或没有 serve 规则；❌ Funnel 打开了（页面在公网上）：<code dir="auto">tailscale serve reset</code></td>
+</tr>
+<tr>
+<td><code dir="auto">web.access</code></td>
+<td>可选的网页口令：以哈希设置 ✅；明文，或短于 <code dir="auto">ui.yaml: web_access.min_password_length</code> ⚠️；读不懂的哈希 ❌（谁都登录不了）；scrypt <code dir="auto">N</code> 低于 16384 的哈希 ⚠️（重新运行 <code dir="auto">pnpm web:password</code>）；设了口令、web 在 compose 之外运行且 <code dir="auto">JOB_RADAR_WEB_BIND</code> 没设 ⚠️（<code dir="auto">http://localhost</code> 也要口令：设 <code dir="auto">JOB_RADAR_WEB_BIND=127.0.0.1</code>）；没有口令时，web 只监听回环地址且 <code dir="auto">tailscale serve</code> 没有转发到它 ✅，否则 ⚠️</td>
+<td><code dir="auto">pnpm web:password</code>，把那一行贴进 <code dir="auto">.env</code>，<code dir="auto">docker compose up -d web</code>（见 <a href="../configuration/#%E7%BD%91%E9%A1%B5%E8%AE%BF%E9%97%AE%E5%8F%AF%E9%80%89%E5%8F%A3%E4%BB%A4%E7%9B%91%E5%90%AC%E5%9C%B0%E5%9D%80%E5%92%8C%E7%AB%AF%E5%8F%A3">configuration.zh.md</a>）</td>
+</tr>
+<tr>
+<td><code dir="auto">backup.recent</code></td>
+<td>备份目录存在，最新一份在 <code dir="auto">backup.max_age_hours</code>（默认 30）内</td>
+<td>❌ 目录不存在或备份太旧：见 <a href="../backup-restore/">backup-restore.zh.md</a>；⚠️ 目录里还没有自动备份（刚部署）</td>
+</tr>
+<tr>
+<td><code dir="auto">data.ownership</code></td>
+<td>仅 Linux：<code dir="auto">data/</code> 和 <code dir="auto">.auth/</code> 下的一切都属于容器运行用的 uid（<code dir="auto">PUID</code>，默认 1000）</td>
+<td>⚠️ 有文件属于别的用户（旧版本或 <code dir="auto">sudo</code> 命令留下的），容器写不了：<code dir="auto">sudo chown -R &lt;PUID&gt;:&lt;PGID&gt; data .auth</code>，见 <a href="../upgrade/">upgrade.zh.md</a></td>
+</tr>
+<tr>
+<td><code dir="auto">data.traps</code></td>
+<td>AI 陷阱：有陷阱的岗位数（总数 / 近 <code dir="auto">scan.recent_days</code> 天）、还没扫描的岗位数</td>
+<td>⚠️ 积压超过 <code dir="auto">scan.backlog_warn</code>：<code dir="auto">pnpm traps:scan --write</code>；⚠️ <code dir="auto">traps.yaml</code> 读不出来 / <code dir="auto">enabled: false</code> / 还没迁移。见 <a href="../ai-traps/">ai-traps.zh.md</a></td>
+</tr>
+<tr>
+<td><code dir="auto">disk.backups</code> <code dir="auto">disk.docker</code></td>
+<td>备份所在的卷、Docker 数据所在的卷剩余空间。<code dir="auto">disk.docker</code> 量的是 Docker Desktop 设置里的 <code dir="auto">DataFolder</code>（<code dir="auto">~/Library/Group Containers/group.com.docker/settings-store.json</code>，读不到就按默认位置 <code dir="auto">~/Library/Containers/com.docker.docker/Data/vms/0/data</code>），detail 里写出量的路径</td>
+<td>⚠️ 低于 <code dir="auto">warn_free_disk_gb</code>（20），❌ 低于 <code dir="auto">min_free_disk_gb</code>（5）。清理：<code dir="auto">docker system df</code>、<code dir="auto">docker builder prune</code>、旧的手动备份、<code dir="auto">data/logs/</code></td>
+</tr>
+<tr>
+<td><code dir="auto">disk.docker_location</code></td>
+<td>Docker 的数据目录（<code dir="auto">DataFolder</code>）和项目在同一个卷上（按设备号比较，不写死卷名）</td>
+<td>⚠️ 不在：数据库、镜像和构建缓存都占着系统盘。如果内置盘不大，把 Docker 数据目录搬到外置盘（配置了 <code dir="auto">doctor.storage_guide</code> 的话按它的说明）</td>
+</tr>
+<tr>
+<td><code dir="auto">disk.internal</code></td>
+<td>Mac 系统盘（<code dir="auto">/System/Volumes/Data</code>）的剩余空间</td>
+<td>⚠️ 低于 <code dir="auto">internal_warn_free_disk_gb</code>（30），❌ 低于 <code dir="auto">internal_min_free_disk_gb</code>（10）：先确认 <code dir="auto">disk.docker_location</code> 是 ✅，其余自行清理</td>
+</tr>
+<tr>
+<td><code dir="auto">channels.&lt;id&gt;</code></td>
+<td>每个<strong>启用</strong>的通道：缺 key、熔断、上一轮全部失败、本月预算和免费额度（达到 <code dir="auto">notify.yaml: alerts.budget_thresholds</code> 的第一档 ⚠️，用完 ❌）</td>
+<td>⚠️ 通常是缺 key 或熔断（只影响这个通道，其他通道不受影响）；<code dir="auto">/sources</code> 页有详情</td>
+</tr>
+<tr>
+<td><code dir="auto">channels.linkedin</code></td>
+<td>LinkedIn 级联里至少有一个可用通道，或者一个都没设置（LinkedIn 是可选的）；启用了 <code dir="auto">linkedin-session</code> 时有登录态文件</td>
+<td>❌ 有设置好的通道，但都不能运行（熔断或没登记）</td>
+</tr>
+<tr>
+<td><code dir="auto">budget.paid</code> <code dir="auto">budget.ai_api</code></td>
+<td>付费通道本月合计、AI 付费 API 本月估算 vs 预算</td>
+<td>⚠️ 达到阈值，❌ 用完</td>
+</tr>
+<tr>
+<td><code dir="auto">cycle.last</code></td>
+<td>上一轮的状态；排定的轮次有没有错过（超过 <code dir="auto">doctor.cycle_grace_minutes</code> 还没开始）</td>
+<td>❌ 上一轮失败或错过了轮次：runner 在不在、Mac 有没有睡眠</td>
+</tr>
+<tr>
+<td><code dir="auto">cycle.next</code></td>
+<td>下一次轮次的时间</td>
+<td>❌ 三个轮次都关了</td>
+</tr>
+<tr>
+<td><code dir="auto">ai.profile</code></td>
+<td><code dir="auto">data/profile/me.yaml</code> 有简介（summary）或技能（skills），AI 打分才会开始</td>
+<td>❌ 两项都空而且有岗位在等打分；⚠️ 两项都空但还没有岗位在等，或者 me.yaml 读不了。怎么办：打开 /me 至少填一项保存，下一轮开始打分。此时今日页和 /me 顶部有“画像不完整，AI 打分已暂停”横幅</td>
+</tr>
+<tr>
+<td><code dir="auto">config.guards</code></td>
+<td><code dir="auto">ai.yaml</code> 里的 CLI 命令是 <code dir="auto">claude</code> / <code dir="auto">codex</code>，<code dir="auto">codex_cli.config_overrides</code> 只有允许的键，接收 key 的服务都指向厂商自己的主机，没有设 <code dir="auto">JOB_RADAR_ALLOW_CUSTOM_ENDPOINTS</code></td>
+<td>❌ 某个 <code dir="auto">command</code> 被拒绝（那个 CLI 不会运行）；⚠️ 有覆盖项被忽略、改过的 <code dir="auto">base_url</code> / <code dir="auto">api_base_url</code> 被拒绝或（放行后）被使用，或设了放行变量。见 <a href="../ai-providers/#ai-worker-%E4%B8%8D%E4%BB%8E-aiyaml-%E6%8E%A5%E5%8F%97%E7%9A%84%E4%B8%9C%E8%A5%BF">ai-providers.zh.md</a></td>
+</tr>
+<tr>
+<td><code dir="auto">ai.backlog</code></td>
+<td>AI 请求队列、等打分的岗位数、最近一次 <code dir="auto">run_ai</code> 的结果（因画像不完整没有打分时写明原因，不算成功）</td>
+<td>⚠️ 积压：ai-worker 在不在</td>
+</tr>
+<tr>
+<td><code dir="auto">config.layers</code></td>
+<td>用户配置目录 <code dir="auto">data/config</code> 存在且可写；列出覆盖了的 <code dir="auto">shipped</code> 文件、版本落后（要迁移）的文件、还在读默认配置的 <code dir="auto">user</code> 文件</td>
+<td>❌ 目录不存在或不可写（<code dir="auto">pnpm config:init</code>；查挂载）；❌ 某个文件的 <code dir="auto">config_version</code> 比代码新（代码回退了：升级代码或从 <code dir="auto">data/config/.backup/</code> 恢复）；⚠️ 覆盖了 <code dir="auto">models.yaml</code> / <code dir="auto">pipeline.yaml</code>：产品更新这些文件的内容不会生效，想跟随就删掉 <code dir="auto">data/config</code> 里那份；⚠️ 版本落后：<code dir="auto">pnpm config:migrate</code> 看改动，<code dir="auto">--write</code> 写回</td>
+</tr>
+<tr>
+<td><code dir="auto">host.power</code></td>
+<td><code dir="auto">pmset</code> 里 autorestart 是 1、sleep 是 0</td>
+<td>⚠️ 没设置：host-setup 第 3 节</td>
+</tr>
+</tbody>
+</table>
+<p>doctor 的阈值和名字都在 <code dir="auto">schedule.yaml</code>（用户配置 <code dir="auto">data/config/</code> 里那份；改完不用重启，下次运行就生效）：</p>
+<table>
+<thead>
+<tr>
+<th>键</th>
+<th>默认</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code dir="auto">backup.max_age_hours</code></td>
+<td>30</td>
+<td>最新备份最老多少小时</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.compose_project</code> / <code dir="auto">compose_services</code></td>
+<td><code dir="auto">job-radar</code> / db web runner jobspy</td>
+<td>检查哪个 compose 项目、哪几个服务；环境变量或 <code dir="auto">.env</code> 里的 <code dir="auto">COMPOSE_PROJECT_NAME</code> 优先（第二个实例）</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.web_url</code></td>
+<td><code dir="auto">http://127.0.0.1:3000</code></td>
+<td>宿主机访问网页的地址；临时用环境变量 <code dir="auto">JOB_RADAR_DOCTOR_WEB_URL</code> 覆盖。设了 <code dir="auto">JOB_RADAR_WEB_PORT</code> / <code dir="auto">JOB_RADAR_WEB_BIND</code> 时，doctor 改用那个端口和地址（<code dir="auto">0.0.0.0</code> 换成 <code dir="auto">127.0.0.1</code>）</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.probe_timeout_seconds</code> / <code dir="auto">command_timeout_seconds</code></td>
+<td>5 / 15</td>
+<td>一次 HTTP 请求 / 一条命令最多等多久</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.min_free_disk_gb</code> / <code dir="auto">warn_free_disk_gb</code></td>
+<td>5 / 20</td>
+<td>磁盘空间阈值（备份所在的卷、Docker 数据所在的卷）</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.internal_min_free_disk_gb</code> / <code dir="auto">internal_warn_free_disk_gb</code></td>
+<td>10 / 30</td>
+<td>Mac 系统盘的阈值（<code dir="auto">disk.internal</code>）</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.storage_guide</code></td>
+<td><code dir="auto">docs/host-setup.md</code></td>
+<td><code dir="auto">disk.docker_location</code> 提示去看的指南（有自己的存储说明就改成它的路径）</td>
+</tr>
+<tr>
+<td><code dir="auto">ai.yaml: host_worker.disk_check_minutes</code></td>
+<td>10</td>
+<td>宿主机 ai-worker 量一次 Docker 数据卷（即 <code dir="auto">disk.docker</code> 那个卷，同样按 <code dir="auto">DataFolder</code> 找）剩余空间的间隔。<code dir="auto">/sources</code> 的低空间横幅用这个值，并注明来源；web 在容器里，自己量到的是容器磁盘，只在 ai-worker 超过 3 个间隔没有写入时才当后备显示</td>
+</tr>
+<tr>
+<td><code dir="auto">ai.yaml: host_worker.docker_data_path</code></td>
+<td>不写</td>
+<td>Docker 数据目录的绝对路径，ai-worker 量磁盘时直接用它，不再读 <code dir="auto">~/Library/Group Containers/group.com.docker/</code> 里的设置文件（launchd 下读它可能被 macOS 隐私授权弹窗一直卡住，测量超时、低空间横幅不更新）。在终端运行 <code dir="auto">pnpm run doctor</code>，<code dir="auto">disk.docker_location</code> 下的提示会给出该填的值</td>
+</tr>
+<tr>
+<td><code dir="auto">ai.yaml: host_worker.log_max_mb</code> / <code dir="auto">log_keep</code></td>
+<td>10 / 3</td>
+<td>ai-worker 日志（<code dir="auto">data/logs/ai-worker.{out,err}.log</code> 和 launchd 的 <code dir="auto">ai-worker.launchd.log</code>）超过多少 MB 轮转、留几份旧的（<code dir="auto">.1</code> 最新）</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.ai_backlog_warn</code> / <code dir="auto">ai_oldest_pending_warn_minutes</code> / <code dir="auto">ai_unscored_warn</code></td>
+<td>40 / 30 / 200</td>
+<td>AI 积压阈值</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.cycle_grace_minutes</code></td>
+<td>90</td>
+<td>排定的轮次晚多久算错过</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.ai_worker_launchd_label</code></td>
+<td><code dir="auto">io.jobradar.ai-worker</code></td>
+<td>launchd 名称</td>
+</tr>
+<tr>
+<td><code dir="auto">doctor.linkedin_auth_dir</code></td>
+<td><code dir="auto">.auth</code></td>
+<td>登录态目录（相对项目目录）</td>
+</tr>
+</tbody>
+</table>
+<p>数据库密码：用 <code dir="auto">scripts/ops/deploy.sh</code>（或运行 <code dir="auto">pnpm config:init</code>）做首次安装（<code dir="auto">.env</code> 里没有 <code dir="auto">POSTGRES_PASSWORD</code>，也还没有 <code dir="auto">jobradar-pg</code> 卷）时，<code dir="auto">pnpm config:init</code> 会在创建数据库之前往 <code dir="auto">.env</code> 写一个随机密码（权限 0600，不打印），不再用众所周知的默认值。已有的数据库保留创建时的密码，所以那里什么都不会改；以后要改，先在数据库里用 <code dir="auto">ALTER USER</code>，再更新 <code dir="auto">.env</code>。<code dir="auto">.env</code> 请自己备份：它不在任何备份里。</p>
+<p>其他位置：数据库连接用 <code dir="auto">DATABASE_URL</code>（没设就按 <code dir="auto">.env</code> 的 <code dir="auto">POSTGRES_USER</code> / <code dir="auto">POSTGRES_PASSWORD</code> / <code dir="auto">POSTGRES_DB</code> / <code dir="auto">DB_HOST_PORT</code> 拼），备份目录用 <code dir="auto">RUNNER_BACKUP_DIR</code>（默认 <code dir="auto">data/backups</code>，所以要在项目目录里运行）。</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="4-升级">4. 升级</h2><a class="sl-anchor-link" href="#4-升级"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “4. 升级”</span></a></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--dry-run</span><span style="--0:#D6DEEB;--1:#403F53">     </span><span style="--0:#919F9F;--1:#5F636F"># 先看一眼</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--ref</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">v2.0.0</span><span style="--0:#D6DEEB;--1:#403F53">   </span><span style="--0:#919F9F;--1:#5F636F"># 用户推荐：发布标签（见 upgrade.zh.md）</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span><span style="--0:#D6DEEB;--1:#403F53">               </span><span style="--0:#919F9F;--1:#5F636F"># 或跟随 main：拉最新 main、备份、构建、重启、清理 Docker 构建缓存、迁移、重启 ai-worker、doctor</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="scripts/ops/deploy.sh --dry-run     # 先看一眼scripts/ops/deploy.sh --ref v2.0.0   # 用户推荐：发布标签（见 upgrade.zh.md）scripts/ops/deploy.sh               # 或跟随 main：拉最新 main、备份、构建、重启、清理 Docker 构建缓存、迁移、重启 ai-worker、doctor"><div></div></button></div></figure></div>
+<p>升级前脚本会自动做一份 <code dir="auto">jobradar-manual-…-pre-deploy.dump</code> 备份（手动备份不会被自动清理）。升级期间 web 和 runner 会重启几十秒；轮次正在运行时重启 runner 会让这一轮中断，下次启动时 <code dir="auto">catch_up</code> 会补跑。想避开轮次：早轮 07:00、晚轮 17:00（工作日）、周末 09:00，在两轮之间升级。</p>
+<p>升级后跑一次 <code dir="auto">pnpm run doctor</code>，确认没有新的 ❌。</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="配置分层之后">配置分层之后</h3><a class="sl-anchor-link" href="#配置分层之后"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “配置分层之后”</span></a></div>
+<ul>
+<li>线上配置是 <code dir="auto">data/config/</code>（不进 git），网页只写这里；<code dir="auto">config/</code> 是随代码发布的默认配置，部署 <code dir="auto">git pull</code> 后它变了也只影响用户目录里<strong>没有</strong>的文件（<code dir="auto">models.yaml</code>、<code dir="auto">pipeline.yaml</code> 这类 <code dir="auto">shipped</code> 文件，除非你覆盖了它们）。所以主 checkout 不会再因为网页保存而变脏，部署也不会再因此拒绝 pull。</li>
+<li><strong>从配置分层之前的版本升级</strong>：第 4 步发现 <code dir="auto">data/config</code> 是空的，<code dir="auto">pnpm config:init</code> 把当时 <code dir="auto">config/</code> 里的全部 <code dir="auto">user</code> 类文件复制过去（和 <code dir="auto">pnpm config:init --from config</code> 结果相同：此时默认配置就是旧的线上配置）。第 4 步之前已经在网页上保存、但还没提交的改动在 <code dir="auto">config/</code> 里（checkout 是脏的，第 2 步会拒绝），先提交再部署。第 4 步到第 7 步之间（旧容器还在跑、还写 <code dir="auto">config/</code>）不要在网页上保存设置。</li>
+<li>升级带了配置格式变化（某个文件的 <code dir="auto">config_version</code> 加了一版）：第 4 步的 <code dir="auto">pnpm config:migrate --write</code> 自动迁移，原文件在 <code dir="auto">data/config/.backup/&lt;时间&gt;/</code>。想先看：<code dir="auto">pnpm config:migrate</code>（只打印 diff）。</li>
+</ul>
+<div class="sl-heading-wrapper level-h2"><h2 id="5-回滚">5. 回滚</h2><a class="sl-anchor-link" href="#5-回滚"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “5. 回滚”</span></a></div>
+<p>先判断问题出在哪：</p>
+<ul>
+<li><strong>代码有问题，数据库没动</strong>（这次没有新迁移）：回到上一个好的提交即可。</li>
+<li><strong>这次升级带了新迁移</strong>，并且新版本已经往里写过数据：迁移只往前走，旧代码在新库上可能出错（doctor 的 <code dir="auto">db.migrations</code> 会提示“数据库比这份代码新”）。需要同时恢复数据库。</li>
+</ul>
+<p>回滚代码：</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">git</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">log</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--oneline</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-10</span><span style="--0:#D6DEEB;--1:#403F53">                      </span><span style="--0:#919F9F;--1:#5F636F"># 找上一个好的提交</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">git</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">switch</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--detach</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&lt;提交&gt;</span><span style="--0:#D6DEEB;--1:#403F53">                 </span><span style="--0:#919F9F;--1:#5F636F"># 部署前的 pre-deploy 备份名字里有日期，可以对照</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/deploy.sh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--skip-pull</span><span style="--0:#D6DEEB;--1:#403F53">          </span><span style="--0:#919F9F;--1:#5F636F"># 按当前 checkout 部署（不再拉 main）</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="git log --oneline -10                      # 找上一个好的提交git switch --detach <提交>                 # 部署前的 pre-deploy 备份名字里有日期，可以对照scripts/ops/deploy.sh --skip-pull          # 按当前 checkout 部署（不再拉 main）"><div></div></button></div></figure></div>
+<p>之后要回到最新版本：<code dir="auto">git switch main</code>，再 <code dir="auto">scripts/ops/deploy.sh</code>。</p>
+<p>配置：回滚到配置分层之前的代码时，旧代码读的是 <code dir="auto">config/</code>（切换前的内容），切换后在网页上的改动只在 <code dir="auto">data/config/</code> 里，需要的话手工拷回 <code dir="auto">config/</code>。回滚到一个迁移之前的版本时，<code dir="auto">data/config</code> 里迁移过的文件对旧代码来说“版本太新”（<code dir="auto">config.layers</code> ❌）：用 <code dir="auto">data/config/.backup/&lt;时间&gt;/</code> 里的原文件替换回去。</p>
+<p>如果新迁移已经应用，还要恢复数据库（<strong>会覆盖主库</strong>，只有这种情况才做，详见 <a href="../backup-restore/">backup-restore.zh.md</a> 第 4 节）：</p>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">ls</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-lh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">data/backups</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">|</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">grep</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">pre-deploy</span><span style="--0:#D6DEEB;--1:#403F53">                    </span><span style="--0:#919F9F;--1:#5F636F"># 升级前自动留的备份</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">scripts/ops/restore.sh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">data/backups/&lt;jobradar-manual-…-pre-deploy.dump&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--target</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">jobradar</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">--yes</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="ls -lh data/backups | grep pre-deploy                    # 升级前自动留的备份scripts/ops/restore.sh data/backups/<jobradar-manual-…-pre-deploy.dump> --target jobradar --yes"><div></div></button></div></figure></div>
+<p>恢复会先把备份还原到临时库检查，再停 web、runner 和 ai-worker，把旧库改名为 <code dir="auto">jobradar_before_restore_&lt;时间戳&gt;</code> 保留（恢复可以撤销），把还原好的副本改成主库名，再启动它们。runner 在迁移前做的 <code dir="auto">…-premigrate-&lt;已应用数&gt;-&lt;随附数&gt;.dump</code> 同样可以用来恢复。恢复后 <code dir="auto">pnpm run doctor</code> 应该回到全 ✅（<code dir="auto">db.migrations</code> 会和回滚后的代码对上）。</p>
+<p>回滚后在你记录的“事件记录”里写下：什么时候、为什么回滚、回到哪个提交。</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="6-7-天无人值守验收">6. 7 天无人值守验收</h2><a class="sl-anchor-link" href="#6-7-天无人值守验收"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “6. 7 天无人值守验收”</span></a></div>
+<p>目标：部署之后连续 7 天，没有人工干预，每天的轮次、推送、AI、备份都正常。验收记录写在你自己的文件里（例如 <code dir="auto">unattended-&lt;date&gt;.md</code>，用真正的开始日期命名），里面放观察表和事件记录。</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="开始前">开始前</h3><a class="sl-anchor-link" href="#开始前"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “开始前”</span></a></div>
+<ol>
+<li>第 1 节清单全部打勾，<code dir="auto">scripts/ops/deploy.sh</code> 成功，<code dir="auto">pnpm run doctor</code> 全是 ✅（最多留下你明确接受的 ⚠️，并写进记录）。</li>
+<li>做过一次重启验证（退出再打开 Docker Desktop；最好重启一次 Mac）。</li>
+<li>在记录里写下：开始日期时间、部署的提交（<code dir="auto">git rev-parse --short HEAD</code>）、开始时 doctor 的输出。</li>
+<li>之后 7 天<strong>不要</strong>手动重启服务、不要手动触发轮次、不要改配置——否则就不是“无人值守”。要改配置或升级，记录进“事件记录”，并重新开始计数。</li>
+</ol>
+<div class="sl-heading-wrapper level-h3"><h3 id="每天一次建议晚上-1700-的晚轮和推送都完成之后">每天一次（建议晚上 17:00 的晚轮和推送都完成之后）</h3><a class="sl-anchor-link" href="#每天一次建议晚上-1700-的晚轮和推送都完成之后"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “每天一次（建议晚上 17:00 的晚轮和推送都完成之后）”</span></a></div>
+<div class="expressive-code"><figure class="frame is-terminal not-content"><figcaption class="header"><span class="title"></span><span class="sr-only">终端窗口</span></figcaption><pre data-language="bash"><code><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">pnpm</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">run</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">doctor</span><span style="--0:#D6DEEB;--1:#403F53">                                            </span><span style="--0:#919F9F;--1:#5F636F"># 记下退出码和 ⚠️ ❌ 的项</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">docker</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">compose</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">exec</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-T</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">db</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">psql</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-U</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">jobradar</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-d</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">jobradar</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-x</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">\</span></div></div><div class="ec-line"><div class="code"><span class="indent">  </span><span style="--0:#82AAFF;--1:#3B61B0">-v</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">day=</span><span style="--0:#D6DEEB;--1:#403F53">$(</span><span style="--0:#C5E478;--1:#3B61B0">TZ</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#ECC48D;--1:#3B61B0">Europe/Berlin</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">date</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">+%F</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">-v</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">tz=Europe/Berlin</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">&lt;</span><span style="--0:#7FDBCA;--1:#096E72">&lt;</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">SQL</span><span style="--0:#D9F5DD;--1:#111111">'</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">select</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">cycles</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">kind</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">&lt;</span><span style="--0:#ECC48D;--1:#3B61B0">&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">manual</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">status</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">&lt;&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">skipped</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (started_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as cycles,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">cycles</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">kind</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">&lt;&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">manual</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">status</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">succeeded</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (started_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as succeeded,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">cycles</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">kind</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">&lt;&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">manual</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">status</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">partial</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (started_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as partial,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">cycles</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">kind</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">&lt;&gt;</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">manual</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">status</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">failed</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (started_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as failed,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">jobs</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> (first_seen_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as new_jobs,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">notifications</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">kind</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">=</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">job</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">sent_at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">is</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">not</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">null</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (sent_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as pushed,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">scores</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">score</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">is</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">not</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">null</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">and</span><span style="--0:#D6DEEB;--1:#403F53"> (scored_at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as scored,</span></div></div><div class="ec-line"><div class="code"><span class="indent"><span style="--0:#D6DEEB;--1:#403F53">  </span></span><span style="--0:#D6DEEB;--1:#403F53">(select count(</span><span style="--0:#7FDBCA;--1:#096E72">*</span><span style="--0:#D6DEEB;--1:#403F53">) </span><span style="--0:#82AAFF;--1:#3B61B0">from</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">ai_usage</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">where</span><span style="--0:#D6DEEB;--1:#403F53"> (at </span><span style="--0:#ECC48D;--1:#3B61B0">at</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">time</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">zone</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">:</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">tz</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">)::date = :</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#ECC48D;--1:#984E4D">day</span><span style="--0:#D9F5DD;--1:#111111">'</span><span style="--0:#D6DEEB;--1:#403F53">) as ai_calls;</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">SQL</span></div></div><div class="ec-line"><div class="code"><span style="--0:#82AAFF;--1:#3B61B0">ls</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">-lh</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#ECC48D;--1:#3B61B0">data/backups</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#7FDBCA;--1:#096E72">|</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">grep</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#ECC48D;--1:#984E4D">jobradar-$(</span><span style="--0:#C5E478;--1:#3B61B0">TZ</span><span style="--0:#C792EA;--1:#8844AE">=</span><span style="--0:#ECC48D;--1:#3B61B0">Europe/Berlin</span><span style="--0:#ECC48D;--1:#984E4D"> </span><span style="--0:#82AAFF;--1:#3B61B0">date</span><span style="--0:#ECC48D;--1:#984E4D"> </span><span style="--0:#ECC48D;--1:#3B61B0">+%Y%m%d</span><span style="--0:#ECC48D;--1:#984E4D">)</span><span style="--0:#D9F5DD;--1:#111111">"</span><span style="--0:#D6DEEB;--1:#403F53">       </span><span style="--0:#919F9F;--1:#5F636F"># 今天的备份</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="复制到剪贴板" data-copied="复制成功！" data-code="pnpm run doctor                                            # 记下退出码和 ⚠️ ❌ 的项docker compose exec -T db psql -U jobradar -d jobradar -x \  -v day=$(TZ=Europe/Berlin date +%F) -v tz=Europe/Berlin <<&#x27;SQL&#x27;select  (select count(*) from cycles where kind <> &#x27;manual&#x27; and status <> &#x27;skipped&#x27; and (started_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as cycles,  (select count(*) from cycles where kind <> &#x27;manual&#x27; and status = &#x27;succeeded&#x27; and (started_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as succeeded,  (select count(*) from cycles where kind <> &#x27;manual&#x27; and status = &#x27;partial&#x27; and (started_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as partial,  (select count(*) from cycles where kind <> &#x27;manual&#x27; and status = &#x27;failed&#x27; and (started_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as failed,  (select count(*) from jobs where (first_seen_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as new_jobs,  (select count(*) from notifications where kind = &#x27;job&#x27; and sent_at is not null and (sent_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as pushed,  (select count(*) from scores where score is not null and (scored_at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as scored,  (select count(*) from ai_usage where (at at time zone :&#x27;tz&#x27;)::date = :&#x27;day&#x27;) as ai_calls;SQLls -lh data/backups | grep &quot;jobradar-$(TZ=Europe/Berlin date +%Y%m%d)&quot;       # 今天的备份"><div></div></button></div></figure></div>
+<p>（<code dir="auto">-U jobradar -d jobradar</code> 是 <code dir="auto">.env</code> 没改过的默认值；改过 <code dir="auto">POSTGRES_USER</code> / <code dir="auto">POSTGRES_DB</code> 的换成你的。这些查询只读。）</p>
+<p>把结果填进记录里当天的一行：</p>
+<table>
+<thead>
+<tr>
+<th>列</th>
+<th>来自</th>
+<th>正常是</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>轮次数</td>
+<td><code dir="auto">cycles</code></td>
+<td>工作日 2（07:00、17:00），周末 1（09:00）；<code dir="auto">catchup</code> 补跑的也算</td>
+</tr>
+<tr>
+<td>成功率</td>
+<td><code dir="auto">succeeded</code> / <code dir="auto">cycles</code>（<code dir="auto">partial</code> 单独记，<code dir="auto">failed</code> 必须是 0）</td>
+<td>全部 succeeded，或 partial 且原因是单个通道（通道互相隔离）</td>
+</tr>
+<tr>
+<td>新岗位</td>
+<td><code dir="auto">new_jobs</code></td>
+<td>大于 0（具体数量看通道和市场，周末更少）</td>
+</tr>
+<tr>
+<td>推送数</td>
+<td><code dir="auto">pushed</code>；再看手机 Telegram 实际收到了几条、能不能点开详情链接</td>
+<td>和手机上收到的一致；静默时段（22:00–07:00）的推送会延到早上</td>
+</tr>
+<tr>
+<td>AI 打分数</td>
+<td><code dir="auto">scored</code>（<code dir="auto">ai_calls</code> 供参考：订阅 CLI 的费用计 0）</td>
+<td>大于 0；doctor 的 <code dir="auto">ai.backlog</code> 没有 ⚠️</td>
+</tr>
+<tr>
+<td>备份</td>
+<td><code dir="auto">ls</code> 看有没有当天 03:30 左右的 <code dir="auto">.dump</code>（文件大小不为 0）</td>
+<td>有一份，且 doctor 的 <code dir="auto">backup.recent</code> 是 ✅</td>
+</tr>
+<tr>
+<td>doctor</td>
+<td>退出码和 ⚠️ ❌ 的 id</td>
+<td>退出码 0 或 1；不能有 ❌</td>
+</tr>
+<tr>
+<td>人工干预</td>
+<td>这一天你有没有手动做过什么</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<div class="sl-heading-wrapper level-h3"><h3 id="怎么算通过">怎么算通过</h3><a class="sl-anchor-link" href="#怎么算通过"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “怎么算通过”</span></a></div>
+<p><strong>某一天算通过</strong>：轮次数符合预期、没有 <code dir="auto">failed</code> 的轮次、有推送且手机上收到了、AI 打分数大于 0、当天有备份、doctor 没有 ❌、没有人工干预。</p>
+<p><strong>7 天验收通过</strong>：连续 7 天每一天都通过。中间任何一天不通过：在“事件记录”里写清楚原因和修复，修好后重新从第 1 天数起（除非你判断这是一次性的、不影响结论的偶发事件）。</p>
+<p>建议在第 3 或第 4 天做一次“断电演练”（重启 Mac，不手动做任何事），记录多久之后 doctor 回到全 ✅。</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="结束时">结束时</h3><a class="sl-anchor-link" href="#结束时"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 1 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 0 0-1.42-1.42m8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 1 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 0 0 0 1.42 1 1 0 0 0 1.42 0l3.88-3.89a4.49 4.49 0 0 0 0-6.33M8.83 15.17a1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.92-4.92a1 1 0 1 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42"></path></svg></span><span class="sr-only" data-pagefind-ignore>Section titled “结束时”</span></a></div>
+<p>在记录末尾写结论：7 天是否连续通过、遇到的事件、doctor 里长期存在的 ⚠️ 及原因、需要改进的地方。</p>
+ </div> <footer class="sl-flex astro-by5ok6jj"> <div class="meta sl-flex astro-by5ok6jj"> <a href="https://github.com/Joevonlong/job-radar/edit/main/docs/deploy.zh.md" class="sl-flex print:hidden astro-elcgdrhe"> <svg aria-hidden="true" class="astro-elcgdrhe astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.2em;"><path d="M22 7.24a1 1 0 0 0-.29-.71l-4.24-4.24a1 1 0 0 0-1.1-.22 1 1 0 0 0-.32.22l-2.83 2.83L2.29 16.05a1 1 0 0 0-.29.71V21a1 1 0 0 0 1 1h4.24a1 1 0 0 0 .76-.29l10.87-10.93L21.71 8c.1-.1.17-.2.22-.33a1 1 0 0 0 0-.24v-.14l.07-.05ZM6.83 20H4v-2.83l9.93-9.93 2.83 2.83L6.83 20ZM18.17 8.66l-2.83-2.83 1.42-1.41 2.82 2.82-1.41 1.42Z"/></svg> 在产品仓库里编辑这篇指南 </a>  </div> <div class="pagination-links print:hidden astro-dm4rk2gw" dir="ltr"> <a href="/job-radar-site/zh/docs/resume-kit/" rel="prev" class="astro-dm4rk2gw"> <svg aria-hidden="true" class="astro-dm4rk2gw astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg> <span class="astro-dm4rk2gw"> 上一页 <br class="astro-dm4rk2gw"> <span class="link-title astro-dm4rk2gw">resume-kit 联动</span> </span> </a> <a href="/job-radar-site/zh/docs/upgrade/" rel="next" class="astro-dm4rk2gw"> <svg aria-hidden="true" class="astro-dm4rk2gw astro-2le2qyhs" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg> <span class="astro-dm4rk2gw"> 下一页 <br class="astro-dm4rk2gw"> <span class="link-title astro-dm4rk2gw">升级和卸载</span> </span> </a> </div>  </footer> <p class="sl-synced astro-jf74usjm"> 
+本页同步自产品库 <a href="https://github.com/Joevonlong/job-radar/tree/main/docs" class="astro-jf74usjm">Joevonlong/job-radar@2947f47</a> 的 <code class="astro-jf74usjm">docs/</code>。Job Radar 与任何招聘网站均无关联。代码采用 AGPL-3.0-only 许可。
+ </p> </div> </div>  </main> </div> </div> </div> </div> </body> </html>

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://joevonlong.github.io/job-radar-site/sitemap-index.xml
