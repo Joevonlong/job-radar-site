@@ -1,12 +1,12 @@
 // Site-wide settings. Imported by astro.config.mjs, the sync scripts and the pages.
 //
 // SITE_URL is the one value to change when the site moves:
-//   project Pages (default)   https://joevonlong.github.io/job-radar-site/
-//   custom domain             https://jobradar.example.org/
+//   project Pages             https://joevonlong.github.io/job-radar-site/
+//   custom domain (default)   https://jobradar.bid/ (public/CNAME must name the same host)
 // Astro's `site` (origin) and `base` (path) are both derived from it. The environment variable SITE_URL overrides it
 // for a one-off build (`SITE_URL=http://localhost:4321/ pnpm build`).
 
-export const SITE_URL = process.env.SITE_URL || 'https://joevonlong.github.io/job-radar-site/';
+export const SITE_URL = process.env.SITE_URL || 'https://jobradar.bid/';
 
 /** Product repository: source links, "View on GitHub", edit links of the synced docs. */
 export const PRODUCT_REPO = 'https://github.com/Joevonlong/job-radar';

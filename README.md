@@ -2,7 +2,7 @@
 
 The website of [Job Radar](https://github.com/Joevonlong/job-radar): a landing page, a tutorials page and the product
 guides, in English (default, `/`) and Chinese (`/zh/`), published with GitHub Pages at
-<https://joevonlong.github.io/job-radar-site/>.
+<https://jobradar.bid/>.
 
 Built with [Astro](https://astro.build/) 7 and [Starlight](https://starlight.astro.build/) for the docs section. Styled
 with the product's design system v3 (paper light theme, terminal dark theme) and the final brand kit.
@@ -17,7 +17,7 @@ Requirements: Node 22 and pnpm 11 (the version is pinned in `package.json` → `
 
 ```bash
 pnpm install          # to use a package store of your own: --store-dir <dir> or the pnpm_config_store_dir variable
-pnpm dev              # http://localhost:4321/job-radar-site/
+pnpm dev              # http://localhost:4321/
 pnpm build            # static site in dist/
 pnpm preview          # serve dist/ locally (stop a background one: pnpm exec astro preview stop)
 pnpm check:links      # every internal link, asset and #anchor in dist/ resolves (CI runs it too)
