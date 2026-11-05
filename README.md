@@ -116,10 +116,14 @@ The synced docs are committed; the videos come from this repository's releases (
 the deploy if a file listed in the lock is missing). The run triggered by the very first push therefore stops at
 "Fetch media" until step 2 is done; run the workflow again after step 3.
 
-**Custom domain.** Change `SITE_URL` in `site.config.mjs` (for example `https://jobradar.example.org/`; the base path
-follows from it), set the domain under Settings → Pages, and push. With a custom domain `robots.txt` is served at the
-domain root and takes effect; on `*.github.io/job-radar-site/` crawlers ignore it (the sitemap is still linked from
-every page).
+**How it is published now.** Settings → Pages publishes the `gh-pages` branch (Deploy from a branch, `/`), and the
+workflow above is disabled. To publish, run `pnpm build` and `pnpm check:links` under Node 22, then replace the contents
+of `gh-pages` with `dist/` and keep an empty `.nojekyll` there (without it Pages drops the `_astro` directory). The
+README clips in `public/readme/` are not in git, so build from a checkout that has them.
+
+**Custom domain.** The site is served at <https://jobradar.bid/>. To move it, change `SITE_URL` in `site.config.mjs`
+(the base path follows from it) and `public/CNAME` together, set the domain under Settings → Pages, and publish. With a
+custom domain `robots.txt` is served at the domain root and takes effect.
 
 ## License
 

@@ -5,7 +5,7 @@ import type { Lang } from '../i18n/ui';
 
 const BASE = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
 
-/** Site-relative path → URL path under the configured base ("docs/setup/" → "/job-radar-site/docs/setup/"). */
+/** Site-relative path → URL path under the configured base (with base "/sub/": "docs/setup/" → "/sub/docs/setup/"). */
 export function url(p = ''): string {
   return BASE + p.replace(/^\/+/, '');
 }
